@@ -1,0 +1,33 @@
+{
+  "name": "@yaqeen/remotion-compositions",
+  "version": "1.0.0",
+  "description": "Shared Remotion compositions for Quran video generation",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src",
+    "assets"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "remotion",
+    "quran",
+    "video",
+    "compositions"
+  ],
+  "author": "Yaqeen App",
+  "license": "MIT",
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "remotion": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "typescript": "^5.0.0"
+  }
+}
