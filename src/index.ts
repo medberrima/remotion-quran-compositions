@@ -7,7 +7,7 @@ export { TextDisplay } from './components/TextDisplay';
 export { Watermark } from './components/Watermark';
 
 // Utils
-export { calculateTimeline } from './utils/timeline';
+export { calculateTimeline, calculateTotalDuration } from './utils/timeline';
 export { getAnimationStyle } from './utils/animations';
 export { getAyahTextWithoutBasmala } from './utils/textUtils';
 

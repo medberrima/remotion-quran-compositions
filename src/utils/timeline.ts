@@ -38,3 +38,19 @@ export function calculateTimeline(
 
   return timeline;
 }
+
+export function calculateTotalDuration(
+  ayahs: SelectedAyah[],
+  fps: number
+): number {
+  const timeline = calculateTimeline(ayahs, fps);
+  
+  if (timeline.length === 0) {
+    return 300; // Default 10 seconds if no ayahs
+  }
+  
+  const lastSegment = timeline[timeline.length - 1];
+  const totalFrames = lastSegment.startFrame + lastSegment.totalFrames;
+  
+  return totalFrames;
+}
