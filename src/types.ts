@@ -7,8 +7,8 @@ export interface SelectedAyah {
   text_ar: string;
   text_en: string;
   text_fr: string;
-  audioUrl: string;
-  audioDuration: number; // in seconds
+  audioUrl?: string;
+  duration: number; // in seconds
 }
 
 export interface AnimationStyle {
@@ -50,4 +50,5 @@ export interface TimelineSegment {
   displayFrames: number;
   exitFrames: number;
   totalFrames: number;
+  audioStartFrame: number;
 }

@@ -1,56 +1,52 @@
-import type { SelectedAyah, TimelineSegment } from "../types";
+import type { SelectedAyah } from '../types';
 
-const ENTER_DURATION = 0.5; // seconds
-const EXIT_DURATION = 0.5; // seconds
-const MIN_DISPLAY_DURATION = 2; // seconds
+export interface TimelineSegment {
+  ayah: SelectedAyah;
+  startFrame: number;
+  enterFrames: number;
+  displayFrames: number;
+  exitFrames: number;
+  totalFrames: number;
+  audioStartFrame: number;
+}
 
 export function calculateTimeline(
   ayahs: SelectedAyah[],
   fps: number
 ): TimelineSegment[] {
-  const timeline: TimelineSegment[] = [];
   let currentFrame = 0;
-
-  for (const ayah of ayahs) {
-    const enterFrames = Math.round(ENTER_DURATION * fps);
-    const exitFrames = Math.round(EXIT_DURATION * fps);
+  
+  return ayahs.map((ayah) => {
+    // Animations overlap with audio - don't add extra time
+    const enterFrames = Math.floor(0.6 * fps);
+    const exitFrames = Math.floor(0.6 * fps);
     
-    // Calculate display duration based on audio duration
-    const audioDurationFrames = Math.round(ayah.audioDuration * fps);
-    const displayFrames = Math.max(
-      Math.round(MIN_DISPLAY_DURATION * fps),
-      audioDurationFrames - enterFrames
-    );
-
-    const totalFrames = enterFrames + displayFrames + exitFrames;
-
-    timeline.push({
+    // EXACT audio duration in frames
+    const displayFrames = Math.floor(ayah.duration * fps);
+    
+    const segment: TimelineSegment = {
       ayah,
       startFrame: currentFrame,
       enterFrames,
       displayFrames,
       exitFrames,
-      totalFrames,
-    });
-
-    currentFrame += totalFrames;
-  }
-
-  return timeline;
+      totalFrames: displayFrames, // Audio duration only
+      audioStartFrame: currentFrame,
+    };
+    
+    // Next starts exactly when this audio ends
+    currentFrame += displayFrames;
+    
+    return segment;
+  });
 }
 
-export function calculateTotalDuration(
-  ayahs: SelectedAyah[],
-  fps: number
-): number {
-  const timeline = calculateTimeline(ayahs, fps);
-  
-  if (timeline.length === 0) {
-    return 300; // Default 10 seconds if no ayahs
-  }
-  
-  const lastSegment = timeline[timeline.length - 1];
-  const totalFrames = lastSegment.startFrame + lastSegment.totalFrames;
-  
-  return totalFrames;
+/**
+ * Calculate total video duration in frames
+ * Returns EXACT sum of audio durations, no extra milliseconds
+ */
+export function calculateTotalDuration(ayahs: SelectedAyah[], fps: number): number {
+  // Sum all audio durations in seconds, then convert to frames
+  const totalSeconds = ayahs.reduce((sum, ayah) => sum + ayah.duration, 0);
+  return Math.floor(totalSeconds * fps);
 }

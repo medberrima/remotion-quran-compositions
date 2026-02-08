@@ -42,6 +42,7 @@ export const TextDisplay: React.FC<Props> = ({ ayah, language }) => {
     MozOsxFontSmoothing: "grayscale",
   };
 
+  // ONE LINE SOCIAL FOOTER - NO BLUR
   const socialBarStyle: CSSProperties = {
     display: "flex",
     alignItems: "center",
@@ -117,7 +118,7 @@ export const TextDisplay: React.FC<Props> = ({ ayah, language }) => {
         {getAyahTextWithoutBasmala(ayah.text_ar)}
       </div>
 
-      {/* Social Footer */}
+      {/* ONE LINE SOCIAL FOOTER */}
       <div style={socialBarStyle}>
         {/* Social Icons */}
         <div style={iconsContainerStyle}>

@@ -1,68 +1,45 @@
-import { CSSProperties } from "react";
+import React from "react";
 
 export function getAnimationStyle(
-  animationId: string,
+  styleId: string,
   enterProgress: number,
   exitProgress: number
-): CSSProperties {
-  const isEntering = enterProgress < 1;
+): React.CSSProperties {
   const isExiting = exitProgress > 0;
-
-  switch (animationId) {
-    case "fade":
+  const opacity = isExiting ? 1 - exitProgress : enterProgress;
+  
+  switch (styleId) {
+    case 'fade':
+      return { opacity };
+      
+    case 'slide':
+      const translateY = isExiting
+        ? exitProgress * -50
+        : (1 - enterProgress) * 50;
       return {
-        opacity: isEntering
-          ? enterProgress
-          : isExiting
-            ? 1 - exitProgress
-            : 1,
+        opacity,
+        transform: `translateY(${translateY}px)`,
       };
-
-    case "slide-up":
+      
+    case 'zoom':
+      const scale = isExiting
+        ? 1 + exitProgress * 0.2
+        : 0.85 + enterProgress * 0.15;
       return {
-        opacity: isEntering
-          ? enterProgress
-          : isExiting
-            ? 1 - exitProgress
-            : 1,
-        transform: isEntering
-          ? `translateY(${(1 - enterProgress) * 100}px)`
-          : isExiting
-            ? `translateY(${-exitProgress * 100}px)`
-            : "translateY(0)",
+        opacity,
+        transform: `scale(${scale})`,
       };
-
-    case "slide-down":
+      
+    case 'slide-up':
+      const slideUp = isExiting
+        ? exitProgress * -100
+        : (1 - enterProgress) * 100;
       return {
-        opacity: isEntering
-          ? enterProgress
-          : isExiting
-            ? 1 - exitProgress
-            : 1,
-        transform: isEntering
-          ? `translateY(${-(1 - enterProgress) * 100}px)`
-          : isExiting
-            ? `translateY(${exitProgress * 100}px)`
-            : "translateY(0)",
+        opacity,
+        transform: `translateY(${slideUp}px)`,
       };
-
-    case "zoom":
-      return {
-        opacity: isEntering
-          ? enterProgress
-          : isExiting
-            ? 1 - exitProgress
-            : 1,
-        transform: isEntering
-          ? `scale(${0.8 + enterProgress * 0.2})`
-          : isExiting
-            ? `scale(${1 - exitProgress * 0.2})`
-            : "scale(1)",
-      };
-
+      
     default:
-      return {
-        opacity: 1,
-      };
+      return { opacity };
   }
 }

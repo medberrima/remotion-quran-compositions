@@ -1,4 +1,4 @@
-import { AbsoluteFill, Img } from "remotion";
+import { AbsoluteFill, Img, staticFile } from "remotion";
 import type { LogoPosition } from "../types";
 
 interface Props {
@@ -14,6 +14,10 @@ export const Watermark: React.FC<Props> = ({
   position,
   size,
 }) => {
+  // Use default logo if none provided - adjust this path based on your setup
+  // You can put the default logo in public/default-logo.png
+  const finalLogoUrl = logoUrl || staticFile('default-logo.png');
+
   const positions: Record<string, any> = {
     "top-left": { top: 40, left: 40 },
     "top-right": { top: 40, right: 40 },
@@ -36,12 +40,13 @@ export const Watermark: React.FC<Props> = ({
           alignItems: "center",
           gap: "14px",
           padding: "12px 20px",
+          // background: "rgba(0, 0, 0, 0.13)",
         }}
       >
-        {/* Logo if provided */}
-        {logoUrl && (
+        {/* Always show logo (default or custom) */}
+        {finalLogoUrl && (
           <Img
-            src={logoUrl}
+            src={finalLogoUrl}
             style={{
               width: `${size}px`,
               height: `${size}px`,
@@ -50,8 +55,6 @@ export const Watermark: React.FC<Props> = ({
             }}
           />
         )}
-        
-        {/* Text watermark */}
         {text && (
           <div
             style={{
