@@ -1,12 +1,12 @@
 import { Composition } from 'remotion';
 import { QuranVideo } from './components/QuranVideo';
 import { calculateTimeline } from './utils/timeline';
-import type { SelectedAyah } from './types';
+import type { SelectedAyah, VideoSettings } from './types';
 
 export const RemotionRoot: React.FC = () => {
   return (
     <>
-      <Composition
+      <Composition<VideoSettings>
         id="QuranVideo"
         component={QuranVideo}
         durationInFrames={300}
