@@ -37,7 +37,7 @@ export const RemotionRoot: React.FC = () => {
         }}
         calculateMetadata={({ props }) => {
           const fps = 30;
-          const timeline = calculateTimeline(props.selectedAyahs as SelectedAyah[], fps);
+          const timeline = calculateTimeline(props.selectedAyahs, fps);
           
           const totalDuration = timeline.length > 0
             ? timeline[timeline.length - 1].startFrame + timeline[timeline.length - 1].totalFrames
