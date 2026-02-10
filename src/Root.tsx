@@ -1,12 +1,12 @@
 import { Composition } from 'remotion';
 import { QuranVideo } from './components/QuranVideo';
 import { calculateTimeline } from './utils/timeline';
-import type { SelectedAyah, VideoSettings } from './types';
+import type { SelectedAyah } from './types';
 
 export const RemotionRoot: React.FC = () => {
   return (
     <>
-      <Composition<VideoSettings>
+      <Composition
         id="QuranVideo"
         component={QuranVideo}
         durationInFrames={300}
@@ -37,7 +37,7 @@ export const RemotionRoot: React.FC = () => {
         }}
         calculateMetadata={({ props }) => {
           const fps = 30;
-          const timeline = calculateTimeline(props.selectedAyahs, fps);
+          const timeline = calculateTimeline(props.selectedAyahs as SelectedAyah[], fps);
           
           const totalDuration = timeline.length > 0
             ? timeline[timeline.length - 1].startFrame + timeline[timeline.length - 1].totalFrames

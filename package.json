@@ -31,11 +31,11 @@
   "author": "Yaqeen App",
   "license": "MIT",
   "peerDependencies": {
-    "react": "^18.0.0",
-    "remotion": "^4.0.0"
+    "react": "^19.2.0",
+    "remotion": "^4.0.415"
   },
   "devDependencies": {
-    "@types/react": "^18.2.0",
-    "typescript": "^5.0.0"
+    "@types/react": "^19.2.5",
+    "typescript": "~5.9.3",
   }
 }
