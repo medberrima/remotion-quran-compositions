@@ -22,11 +22,6 @@ export interface Background {
   type: "gradient" | "image" | "video";
   style?: string;
   url?: string;
-  // ✅ NEW: pre-extracted frame data for video backgrounds (avoids <Video> Chromium decoding)
-  // framesBaseUrl: full URL to frames directory e.g. "http://localhost:3000/uploads/frames-xxx"
-  // totalFrames: total number of extracted frames (used to loop correctly)
-  framesBaseUrl?: string;
-  totalFrames?: number;
 }
 
 export type LogoPositionId = "top-left" | "top-right" | "bottom-left" | "bottom-right" | "center";
