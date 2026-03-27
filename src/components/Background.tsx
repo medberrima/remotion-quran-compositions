@@ -31,7 +31,7 @@ export const Background: React.FC<Props> = ({ background }) => {
             height: '100%',
             objectFit: 'cover',
             transform: `scale(${scale}) translateX(${translateX}%)`,
-            // ✅ removed blur(1px) — CSS blur is very expensive at 1080×1920
+            // blur() removed — very expensive at 1080×1920
             filter: 'brightness(0.65)',
           }}
         />
@@ -42,11 +42,11 @@ export const Background: React.FC<Props> = ({ background }) => {
   // ─── VIDEO ────────────────────────────────────────────────────────────────────
   if (background.type === 'video') {
 
-    // ✅ FAST PATH: pre-extracted JPEG frames served as static images.
-    //    Replaces <Video> which forces Chromium to decode video frame-by-frame.
-    //    framesBaseUrl and totalFrames are set by the server during upload.
+    // ✅ FAST PATH: pre-extracted JPEG frames read via file:// URL.
+    //    file:// bypasses HTTP entirely — Chromium reads straight from disk.
+    //    framesBaseUrl is set to a file:// URL by the server (e.g. file:///G:/uploads/frames-xxx)
+    //    --allow-file-access-from-files must be set in chromiumOptions on the server.
     if (background.framesBaseUrl && background.totalFrames && background.totalFrames > 0) {
-      // Loop frames: wrap current frame index into the available frame range
       const videoFrame = (frame % background.totalFrames) + 1;
       const framePad = String(videoFrame).padStart(5, '0');
       const src = `${background.framesBaseUrl}/frame_${framePad}.jpg`;
@@ -59,7 +59,7 @@ export const Background: React.FC<Props> = ({ background }) => {
               width: '100%',
               height: '100%',
               objectFit: 'cover',
-              // ✅ removed blur(1px) — expensive and barely visible
+              // blur() removed — expensive and barely visible
               filter: 'brightness(0.6)',
             }}
           />
@@ -67,8 +67,7 @@ export const Background: React.FC<Props> = ({ background }) => {
       );
     }
 
-    // ⚠️ FALLBACK: <Video> used only if frames were not pre-extracted.
-    //    This is slow — prefer always having framesBaseUrl set.
+    // ⚠️ FALLBACK: <Video> if frames were not pre-extracted (slow)
     return (
       <AbsoluteFill>
         <Video
