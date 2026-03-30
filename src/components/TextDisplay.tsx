@@ -23,7 +23,7 @@ export const TextDisplay: React.FC<Props> = ({ ayah, language }) => {
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    padding: "60px 50px",
+    padding: "60px 30px",
     maxWidth: "95%",
     textAlign: "center",
     gap: "0px",
@@ -34,12 +34,10 @@ export const TextDisplay: React.FC<Props> = ({ ayah, language }) => {
     fontSize: "52px",
     lineHeight: 1.9,
     color: "#FFFFFF",
-    textShadow: "0 4px 20px rgba(0,0,0,0.6), 0 2px 8px rgba(0,0,0,0.4)",
+    textShadow: "0 4px 20px rgba(0,0,0,0.6)",
     marginBottom: "0px",
     direction: "rtl",
     fontWeight: 400,
-    WebkitFontSmoothing: "antialiased",
-    MozOsxFontSmoothing: "grayscale",
   };
 
   const translationStyle: CSSProperties = {
@@ -47,11 +45,9 @@ export const TextDisplay: React.FC<Props> = ({ ayah, language }) => {
     fontSize: isArabic ? "52px" : "34px",
     lineHeight: isArabic ? 1.9 : 1.6,
     color: isArabic ? "#FFFFFF" : "rgba(255,255,255,0.95)",
-    textShadow: "0 3px 16px rgba(0,0,0,0.5), 0 2px 6px rgba(0,0,0,0.3)",
+    textShadow: "0 2px 10px rgba(0,0,0,0.4)",
     direction: isArabic ? "rtl" : "ltr",
     fontWeight: isArabic ? 400 : 500,
-    WebkitFontSmoothing: "antialiased",
-    MozOsxFontSmoothing: "grayscale",
     marginBottom: isArabic ? "40px" : "0",
   };
 
@@ -65,147 +61,71 @@ export const TextDisplay: React.FC<Props> = ({ ayah, language }) => {
     letterSpacing: "0.5px",
   };
 
-  // ── ONE LINE BAR — 🎮 Google Play · Yaqeen Muslim - يقين المسلم │ حمّل مجاناً ↓
+  // ── MINIMALIST ONE-LINE BAR ──────────────────────────────
   const barStyle: CSSProperties = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    gap: "0px",
-    padding: "11px 30px",
+    gap: "12px",
+    padding: "10px 25px",
     margin: "28px 0 10px",
-    background: "rgba(0, 0, 0, 0.4)",
-    border: "1.5px solid rgba(255, 255, 255, 0.15)",
-    borderRadius: "100px",
+    background: "rgba(0, 0, 0, 0.35)",
+    borderRadius: "50px",
     flexWrap: "nowrap",
     whiteSpace: "nowrap",
-  };
-
-  const baseText: CSSProperties = {
     fontFamily: '"Cairo", sans-serif',
+    fontSize: "18px",
+    fontWeight: 700,
     color: "#FFFFFF",
-    lineHeight: 1,
-    whiteSpace: "nowrap",
-    WebkitFontSmoothing: "antialiased",
+    textAlign: "center",
   };
 
-  // 🎮 Google Play
-  const storeBlockStyle: CSSProperties = {
-    display: "flex",
-    alignItems: "center",
-    gap: "7px",
-  };
+  const storeIconStyle: CSSProperties = { display: "flex", alignItems: "center", gap: "5px" };
+  const dividerStyle: CSSProperties = { width: "1px", height: "20px", background: "rgba(255,255,255,0.2)" };
 
-  const storeNameStyle: CSSProperties = {
-    ...baseText,
-    fontSize: "15px",
-    fontWeight: 600,
-    color: "rgba(255,255,255,0.85)",
-  };
-
-  // · dot between store and name
-  const dotStyle: CSSProperties = {
-    ...baseText,
-    fontSize: "15px",
-    color: "rgba(255,255,255,0.3)",
-    margin: "0 11px",
-  };
-
-  // Yaqeen Muslim - يقين المسلم
-  const appNameStyle: CSSProperties = {
-    ...baseText,
-    fontSize: "19px",
-    fontWeight: 700,
-  };
-
-  // │ separator
-  const dividerStyle: CSSProperties = {
-    width: "1.5px",
-    height: "20px",
-    background: "rgba(255,255,255,0.22)",
-    margin: "0 14px",
-    flexShrink: 0,
-  };
-
-  // حمّل مجاناً ↓
-  const ctaStyle: CSSProperties = {
-    ...baseText,
-    fontSize: "19px",
-    fontWeight: 700,
-    direction: "rtl",
-  };
-
-  // ── SOCIAL ROW — tiny, subtle, below ──────────────────────────────────────
+  // ── SOCIAL ROW ──────────────────────────────────────────
   const socialRowStyle: CSSProperties = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    gap: "9px",
+    gap: "8px",
     opacity: 0.5,
+    marginTop: "8px",
   };
 
-  const handleStyle: CSSProperties = {
-    fontFamily: '"Cairo", sans-serif',
-    fontSize: "13px",
-    fontWeight: 500,
-    color: "#FFFFFF",
-    whiteSpace: "nowrap",
-  };
-
-  const socialDotStyle: CSSProperties = {
-    fontSize: "11px",
-    color: "rgba(255,255,255,0.35)",
-  };
+  const handleStyle: CSSProperties = { fontFamily: '"Cairo", sans-serif', fontSize: "13px", fontWeight: 500, color: "#FFFFFF" };
 
   return (
     <div style={containerStyle}>
 
       {/* Arabic Text */}
-      <div style={arabicTextStyle}>
-        {getAyahTextWithoutBasmala(ayah.text_ar)}
-      </div>
+      <div style={arabicTextStyle}>{getAyahTextWithoutBasmala(ayah.text_ar)}</div>
 
-      {/* Translation (if not Arabic) */}
-      {language !== "ar" && (
-        <div style={translationStyle}>{translationText}</div>
-      )}
+      {/* Translation */}
+      {language !== "ar" && <div style={translationStyle}>{translationText}</div>}
 
-      {/* Surah and Ayah reference */}
-      <div style={metaStyle}>
-        {ayah.surahName} • Ayah {ayah.ayahNumber}
-      </div>
+      {/* Surah & Ayah */}
+      <div style={metaStyle}>{ayah.surahName} • Ayah {ayah.ayahNumber}</div>
 
-      {/* ── ONE LINE ──────────────────────────────────────────────────────────
-          🎮 Google Play  ·  Yaqeen Muslim - يقين المسلم  │  حمّل مجاناً ↓
-      ─────────────────────────────────────────────────────────────────────── */}
+      {/* ── MINIMALIST DOWNLOAD BAR ── */}
       <div style={barStyle}>
-
-        {/* 🎮 Google Play */}
-        <div style={storeBlockStyle}>
-          <GooglePlayIcon size={17} color="rgba(255,255,255,0.85)" />
-          <span style={storeNameStyle}>Google Play</span>
+        <div style={storeIconStyle}>
+          <GooglePlayIcon size={17} color="#FFFFFF" />
+          Google Play
         </div>
-
-        {/* · */}
-        <span style={dotStyle}>·</span>
-
-        {/* Yaqeen Muslim - يقين المسلم */}
-        <span style={appNameStyle}>Yaqeen Muslim - يقين المسلم</span>
-
-        {/* │ */}
         <div style={dividerStyle} />
-
-        {/* حمّل مجاناً ↓ */}
-        <span style={ctaStyle}>حمّل مجاناً ↓</span>
-
+        Yaqeen Muslim - يقين المسلم
+        <div style={dividerStyle} />
+        حمّل مجاناً
       </div>
 
-      {/* ── SOCIAL — tiny, subtle ─────────────────────────────────────────── */}
+      {/* ── SOCIAL ICONS ── */}
       <div style={socialRowStyle}>
         <InstagramIcon size={16} color="#FFFFFF" />
-        <TiktokIcon    size={16} color="#FFFFFF" />
-        <FacebookIcon  size={16} color="#FFFFFF" />
-        <XIcon         size={16} color="#FFFFFF" />
-        <span style={socialDotStyle}>·</span>
+        <TiktokIcon size={16} color="#FFFFFF" />
+        <FacebookIcon size={16} color="#FFFFFF" />
+        {/* <XIcon size={16} color="#FFFFFF" /> */}
+        <span style={{ fontSize: "11px", color: "rgba(255,255,255,0.35)" }}>·</span>
         <span style={handleStyle}>@YaqeenMuslimApp</span>
       </div>
 
