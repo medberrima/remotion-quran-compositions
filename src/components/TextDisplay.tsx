@@ -43,7 +43,7 @@ export const TextDisplay: React.FC<Props> = ({ ayah, language }) => {
   };
 
   const translationStyle: CSSProperties = {
-    fontFamily: '"Inter", "Segoe UI", sans-serif',
+    fontFamily: '"Cairo", "Inter", sans-serif',
     fontSize: isArabic ? "52px" : "34px",
     lineHeight: isArabic ? 1.9 : 1.6,
     color: isArabic ? "#FFFFFF" : "rgba(255,255,255,0.95)",
@@ -56,7 +56,7 @@ export const TextDisplay: React.FC<Props> = ({ ayah, language }) => {
   };
 
   const metaStyle: CSSProperties = {
-    fontFamily: '"Inter", sans-serif',
+    fontFamily: '"Cairo", sans-serif',
     fontSize: "22px",
     color: "rgba(255,255,255,0.85)",
     marginTop: "40px",
@@ -65,114 +65,99 @@ export const TextDisplay: React.FC<Props> = ({ ayah, language }) => {
     letterSpacing: "0.5px",
   };
 
-  // ── PRIMARY BAR — App name + Download CTA ──────────────────────────────────
-  const primaryBarStyle: CSSProperties = {
+  // ── ONE LINE BAR ───────────────────────────────────────────────────────────
+  const barStyle: CSSProperties = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    gap: "14px",
-    padding: "12px 32px",
-    marginTop: "28px",
-    marginBottom: "8px",
+    gap: "0px",
+    padding: "11px 30px",
+    margin: "28px 0 10px",
     background: "rgba(0, 0, 0, 0.4)",
     border: "1.5px solid rgba(255, 255, 255, 0.15)",
     borderRadius: "100px",
     flexWrap: "nowrap",
+    whiteSpace: "nowrap",
   };
 
-  const separatorStyle: CSSProperties = {
-    width: "1.5px",
-    height: "24px",
-    background: "rgba(255, 255, 255, 0.25)",
-    flexShrink: 0,
-  };
-
-  // App name — Arabic + Latin stacked
-  const appNameWrapStyle: CSSProperties = {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    gap: "1px",
+  // Shared text base
+  const baseText: CSSProperties = {
+    fontFamily: '"Cairo", sans-serif',
+    fontWeight: 700,
+    color: "#FFFFFF",
+    lineHeight: 1,
+    whiteSpace: "nowrap",
+    WebkitFontSmoothing: "antialiased",
   };
 
   const appNameArStyle: CSSProperties = {
-    fontFamily: '"Amiri", "Traditional Arabic", serif',
-    fontSize: "19px",
-    fontWeight: 700,
-    color: "#FFFFFF",
+    ...baseText,
+    fontSize: "20px",
     direction: "rtl",
-    lineHeight: 1.1,
-    whiteSpace: "nowrap",
   };
 
-  const appNameEnStyle: CSSProperties = {
-    fontFamily: '"Inter", sans-serif',
-    fontSize: "12px",
-    fontWeight: 500,
-    color: "rgba(255,255,255,0.6)",
-    letterSpacing: "0.3px",
-    lineHeight: 1.1,
-    whiteSpace: "nowrap",
+  const dividerStyle: CSSProperties = {
+    width: "1.5px",
+    height: "20px",
+    background: "rgba(255,255,255,0.22)",
+    margin: "0 14px",
+    flexShrink: 0,
   };
 
-  // CTA — حمّل مجاناً + Google Play
-  const ctaStyle: CSSProperties = {
+  const googlePlayStyle: CSSProperties = {
     display: "flex",
     alignItems: "center",
     gap: "7px",
-    flexWrap: "nowrap",
+  };
+
+  const storeNameStyle: CSSProperties = {
+    ...baseText,
+    fontSize: "15px",
+    fontWeight: 600,
+    color: "rgba(255,255,255,0.88)",
+  };
+
+  const dividerDotStyle: CSSProperties = {
+    fontSize: "15px",
+    color: "rgba(255,255,255,0.3)",
+    margin: "0 12px",
+    lineHeight: 1,
+  };
+
+  const appNameEnStyle: CSSProperties = {
+    ...baseText,
+    fontSize: "20px",
+    fontWeight: 700,
   };
 
   const ctaArStyle: CSSProperties = {
-    fontFamily: '"Amiri", "Traditional Arabic", serif',
-    fontSize: "19px",
-    fontWeight: 700,
-    color: "#FFFFFF",
+    ...baseText,
+    fontSize: "20px",
     direction: "rtl",
-    lineHeight: 1,
-    whiteSpace: "nowrap",
-  };
-
-  const ctaEnStyle: CSSProperties = {
-    fontFamily: '"Inter", sans-serif',
-    fontSize: "14px",
+    color: "rgba(255,255,255,0.92)",
     fontWeight: 600,
-    color: "rgba(255,255,255,0.9)",
-    letterSpacing: "0.2px",
-    whiteSpace: "nowrap",
-    display: "flex",
-    alignItems: "center",
-    gap: "5px",
   };
 
-  // ── SECONDARY ROW — Social icons + handle (tiny, below) ───────────────────
+  // ── SOCIAL ROW — tiny, below ───────────────────────────────────────────────
   const socialRowStyle: CSSProperties = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    gap: "10px",
-    marginBottom: "0px",
-    opacity: 0.65,
-  };
-
-  const iconsStyle: CSSProperties = {
-    display: "flex",
-    alignItems: "center",
-    gap: "8px",
+    gap: "9px",
+    opacity: 0.55,
   };
 
   const handleStyle: CSSProperties = {
-    fontFamily: '"Inter", sans-serif',
+    fontFamily: '"Cairo", sans-serif',
     fontSize: "13px",
     fontWeight: 500,
     color: "#FFFFFF",
-    letterSpacing: "0.2px",
     whiteSpace: "nowrap",
   };
 
-  const dotStyle: CSSProperties = {
+  const iconsDotStyle: CSSProperties = {
+    fontSize: "11px",
     color: "rgba(255,255,255,0.4)",
-    fontSize: "12px",
   };
 
   return (
@@ -193,38 +178,41 @@ export const TextDisplay: React.FC<Props> = ({ ayah, language }) => {
         {ayah.surahName} • Ayah {ayah.ayahNumber}
       </div>
 
-      {/* ── PRIMARY BAR — App name + Download ── */}
-      <div style={primaryBarStyle}>
+      {/* ── ONE LINE ─────────────────────────────────────────────────────────
+          يقين المسلم  |  🎮 Google Play  ·  Yaqeen Muslim  |  حمّل مجاناً
+      ─────────────────────────────────────────────────────────────────────── */}
+      <div style={barStyle}>
 
-        {/* App name: يقين المسلم / Yaqeen Muslim */}
-        <div style={appNameWrapStyle}>
-          <span style={appNameArStyle}>يقين المسلم</span>
-          <span style={appNameEnStyle}>Yaqeen Muslim</span>
+        {/* يقين المسلم */}
+        <span style={appNameArStyle}>يقين المسلم</span>
+
+        <div style={dividerStyle} />
+
+        {/* Google Play icon + name */}
+        <div style={googlePlayStyle}>
+          <GooglePlayIcon size={17} color="rgba(255,255,255,0.88)" />
+          <span style={storeNameStyle}>Google Play</span>
         </div>
 
-        <div style={separatorStyle} />
+        <span style={dividerDotStyle}>—</span>
 
-        {/* CTA: حمّل مجاناً · Google Play icon + text */}
-        <div style={ctaStyle}>
-          <span style={ctaArStyle}>حمّل مجاناً</span>
-          <span style={dotStyle}>·</span>
-          <div style={ctaEnStyle}>
-            <GooglePlayIcon size={15} color="rgba(255,255,255,0.9)" />
-            <span>Google Play</span>
-          </div>
-        </div>
+        {/* Yaqeen Muslim */}
+        <span style={appNameEnStyle}>Yaqeen Muslim</span>
+
+        <div style={dividerStyle} />
+
+        {/* حمّل مجاناً */}
+        <span style={ctaArStyle}>حمّل مجاناً</span>
 
       </div>
 
-      {/* ── SECONDARY — Social icons + handle (small, subtle) ── */}
+      {/* ── SOCIAL — tiny, subtle ─────────────────────────────────────────── */}
       <div style={socialRowStyle}>
-        <div style={iconsStyle}>
-          <InstagramIcon size={18} color="#FFFFFF" />
-          <TiktokIcon    size={18} color="#FFFFFF" />
-          <FacebookIcon  size={18} color="#FFFFFF" />
-          <XIcon         size={18} color="#FFFFFF" />
-        </div>
-        <span style={dotStyle}>·</span>
+        <InstagramIcon size={16} color="#FFFFFF" />
+        <TiktokIcon    size={16} color="#FFFFFF" />
+        <FacebookIcon  size={16} color="#FFFFFF" />
+        {/* <XIcon         size={16} color="#FFFFFF" /> */}
+        <span style={iconsDotStyle}>·</span>
         <span style={handleStyle}>@YaqeenMuslimApp</span>
       </div>
 
