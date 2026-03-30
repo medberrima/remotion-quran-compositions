@@ -78,6 +78,7 @@ export const TextDisplay: React.FC<Props> = ({ ayah, language }) => {
     fontWeight: 700,
     color: "#FFFFFF",
     textAlign: "center",
+    opacity: 0.9,
   };
 
   const storeIconStyle: CSSProperties = { display: "flex", alignItems: "center", gap: "5px" };
