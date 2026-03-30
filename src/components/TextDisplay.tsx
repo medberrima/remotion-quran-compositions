@@ -65,7 +65,7 @@ export const TextDisplay: React.FC<Props> = ({ ayah, language }) => {
     letterSpacing: "0.5px",
   };
 
-  // ── ONE LINE BAR ───────────────────────────────────────────────────────────
+  // ── ONE LINE BAR — 🎮 Google Play · Yaqeen Muslim - يقين المسلم │ حمّل مجاناً ↓
   const barStyle: CSSProperties = {
     display: "flex",
     alignItems: "center",
@@ -80,31 +80,16 @@ export const TextDisplay: React.FC<Props> = ({ ayah, language }) => {
     whiteSpace: "nowrap",
   };
 
-  // Shared text base
   const baseText: CSSProperties = {
     fontFamily: '"Cairo", sans-serif',
-    fontWeight: 700,
     color: "#FFFFFF",
     lineHeight: 1,
     whiteSpace: "nowrap",
     WebkitFontSmoothing: "antialiased",
   };
 
-  const appNameArStyle: CSSProperties = {
-    ...baseText,
-    fontSize: "20px",
-    direction: "rtl",
-  };
-
-  const dividerStyle: CSSProperties = {
-    width: "1.5px",
-    height: "20px",
-    background: "rgba(255,255,255,0.22)",
-    margin: "0 14px",
-    flexShrink: 0,
-  };
-
-  const googlePlayStyle: CSSProperties = {
+  // 🎮 Google Play
+  const storeBlockStyle: CSSProperties = {
     display: "flex",
     alignItems: "center",
     gap: "7px",
@@ -114,37 +99,48 @@ export const TextDisplay: React.FC<Props> = ({ ayah, language }) => {
     ...baseText,
     fontSize: "15px",
     fontWeight: 600,
-    color: "rgba(255,255,255,0.88)",
+    color: "rgba(255,255,255,0.85)",
   };
 
-  const dividerDotStyle: CSSProperties = {
+  // · dot between store and name
+  const dotStyle: CSSProperties = {
+    ...baseText,
     fontSize: "15px",
     color: "rgba(255,255,255,0.3)",
-    margin: "0 12px",
-    lineHeight: 1,
+    margin: "0 11px",
   };
 
-  const appNameEnStyle: CSSProperties = {
+  // Yaqeen Muslim - يقين المسلم
+  const appNameStyle: CSSProperties = {
     ...baseText,
-    fontSize: "20px",
+    fontSize: "19px",
     fontWeight: 700,
   };
 
-  const ctaArStyle: CSSProperties = {
-    ...baseText,
-    fontSize: "20px",
-    direction: "rtl",
-    color: "rgba(255,255,255,0.92)",
-    fontWeight: 600,
+  // │ separator
+  const dividerStyle: CSSProperties = {
+    width: "1.5px",
+    height: "20px",
+    background: "rgba(255,255,255,0.22)",
+    margin: "0 14px",
+    flexShrink: 0,
   };
 
-  // ── SOCIAL ROW — tiny, below ───────────────────────────────────────────────
+  // حمّل مجاناً ↓
+  const ctaStyle: CSSProperties = {
+    ...baseText,
+    fontSize: "19px",
+    fontWeight: 700,
+    direction: "rtl",
+  };
+
+  // ── SOCIAL ROW — tiny, subtle, below ──────────────────────────────────────
   const socialRowStyle: CSSProperties = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     gap: "9px",
-    opacity: 0.55,
+    opacity: 0.5,
   };
 
   const handleStyle: CSSProperties = {
@@ -155,9 +151,9 @@ export const TextDisplay: React.FC<Props> = ({ ayah, language }) => {
     whiteSpace: "nowrap",
   };
 
-  const iconsDotStyle: CSSProperties = {
+  const socialDotStyle: CSSProperties = {
     fontSize: "11px",
-    color: "rgba(255,255,255,0.4)",
+    color: "rgba(255,255,255,0.35)",
   };
 
   return (
@@ -178,31 +174,28 @@ export const TextDisplay: React.FC<Props> = ({ ayah, language }) => {
         {ayah.surahName} • Ayah {ayah.ayahNumber}
       </div>
 
-      {/* ── ONE LINE ─────────────────────────────────────────────────────────
-          يقين المسلم  |  🎮 Google Play  ·  Yaqeen Muslim  |  حمّل مجاناً
+      {/* ── ONE LINE ──────────────────────────────────────────────────────────
+          🎮 Google Play  ·  Yaqeen Muslim - يقين المسلم  │  حمّل مجاناً ↓
       ─────────────────────────────────────────────────────────────────────── */}
       <div style={barStyle}>
 
-        {/* يقين المسلم */}
-        <span style={appNameArStyle}>يقين المسلم</span>
-
-        <div style={dividerStyle} />
-
-        {/* Google Play icon + name */}
-        <div style={googlePlayStyle}>
-          <GooglePlayIcon size={17} color="rgba(255,255,255,0.88)" />
+        {/* 🎮 Google Play */}
+        <div style={storeBlockStyle}>
+          <GooglePlayIcon size={17} color="rgba(255,255,255,0.85)" />
           <span style={storeNameStyle}>Google Play</span>
         </div>
 
-        <span style={dividerDotStyle}>—</span>
+        {/* · */}
+        <span style={dotStyle}>·</span>
 
-        {/* Yaqeen Muslim */}
-        <span style={appNameEnStyle}>Yaqeen Muslim</span>
+        {/* Yaqeen Muslim - يقين المسلم */}
+        <span style={appNameStyle}>Yaqeen Muslim - يقين المسلم</span>
 
+        {/* │ */}
         <div style={dividerStyle} />
 
-        {/* حمّل مجاناً */}
-        <span style={ctaArStyle}>حمّل مجاناً</span>
+        {/* حمّل مجاناً ↓ */}
+        <span style={ctaStyle}>حمّل مجاناً ↓</span>
 
       </div>
 
@@ -211,8 +204,8 @@ export const TextDisplay: React.FC<Props> = ({ ayah, language }) => {
         <InstagramIcon size={16} color="#FFFFFF" />
         <TiktokIcon    size={16} color="#FFFFFF" />
         <FacebookIcon  size={16} color="#FFFFFF" />
-        {/* <XIcon         size={16} color="#FFFFFF" /> */}
-        <span style={iconsDotStyle}>·</span>
+        <XIcon         size={16} color="#FFFFFF" />
+        <span style={socialDotStyle}>·</span>
         <span style={handleStyle}>@YaqeenMuslimApp</span>
       </div>
 
