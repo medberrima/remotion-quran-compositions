@@ -69,7 +69,7 @@ export const TextDisplay: React.FC<Props> = ({ ayah, language }) => {
     gap: "12px",
     padding: "10px 25px",
     margin: "28px 0 10px",
-    background: "rgba(0, 0, 0, 0.35)",
+    background: "rgba(0, 0, 0, 0.23)",
     borderRadius: "50px",
     flexWrap: "nowrap",
     whiteSpace: "nowrap",
@@ -114,7 +114,7 @@ export const TextDisplay: React.FC<Props> = ({ ayah, language }) => {
           Google Play
         </div>
         <span style={{ marginLeft: "8px" }}>•</span>
-        Yaqeen Muslim | يقين المسلم – حمّل الآن
+        Yaqeen Muslim | حمّل الآن مجانًا - يقين المسلم
       </div>
 
       {/* ── SOCIAL ICONS ── */}
