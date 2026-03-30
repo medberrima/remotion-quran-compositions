@@ -2,7 +2,7 @@ import { AbsoluteFill, interpolate, useCurrentFrame, Sequence } from 'remotion';
 import type { SelectedAyah, AnimationStyle, Language } from '../types';
 import { TextDisplay } from './TextDisplay';
 import { getAnimationStyle } from '../utils/animations';
-import { splitIntoChunks } from '../utils/textChunks';
+import { splitArabicIntoChunks, splitTranslationIntoNChunks } from '../utils/textChunks';
 
 interface Props {
   ayah: SelectedAyah;
@@ -13,9 +13,8 @@ interface Props {
   exitFrames: number;
 }
 
-// Frames reserved for enter/exit animation per chunk
-const CHUNK_ENTER_FRAMES = 15;
-const CHUNK_EXIT_FRAMES  = 10;
+const CHUNK_ENTER = 15;
+const CHUNK_EXIT  = 10;
 
 export const AyahScene: React.FC<Props> = ({
   ayah,
@@ -28,11 +27,15 @@ export const AyahScene: React.FC<Props> = ({
   const frame       = useCurrentFrame();
   const totalFrames = enterFrames + displayFrames + exitFrames;
 
-  // ── Split the Arabic text into chunks ─────────────────────────────────────
-  const chunks = splitIntoChunks(ayah.text_ar, 100);
+  // ── Split Arabic into chunks of ≤ 50 chars ────────────────────────────────
+  const arChunks = splitArabicIntoChunks(ayah.text_ar, 50);
+
+  // ── Split translation into the same N groups ──────────────────────────────
+  const enChunks = splitTranslationIntoNChunks(ayah.text_en, arChunks.length);
+  const frChunks = splitTranslationIntoNChunks(ayah.text_fr, arChunks.length);
 
   // ── SINGLE CHUNK — original behaviour ─────────────────────────────────────
-  if (chunks.length === 1) {
+  if (arChunks.length === 1) {
     const enterProgress = interpolate(frame, [0, enterFrames], [0, 1], {
       extrapolateRight: 'clamp',
     });
@@ -45,62 +48,65 @@ export const AyahScene: React.FC<Props> = ({
     const style = getAnimationStyle(animationStyle.id, enterProgress, exitProgress);
 
     return (
-      <AbsoluteFill style={{ ...style, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+      <AbsoluteFill
+        style={{ ...style, display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+      >
         <TextDisplay ayah={ayah} language={language} />
       </AbsoluteFill>
     );
   }
 
-  // ── MULTIPLE CHUNKS — split displayFrames equally among chunks ────────────
+  // ── MULTIPLE CHUNKS ────────────────────────────────────────────────────────
   //
-  // Each chunk owns: CHUNK_ENTER_FRAMES + chunkDisplay + CHUNK_EXIT_FRAMES
-  // The outer enter/exit animate the whole scene; chunk transitions are internal.
+  // displayFrames is divided equally among chunks.
+  // Each chunk: CHUNK_ENTER + chunkDisplay + CHUNK_EXIT
   //
-  // Timeline inside displayFrames:
-  //   [chunk 0: enter(15) + display + exit(10)] [chunk 1: ...] ...
-
-  const chunkTransitionFrames = CHUNK_ENTER_FRAMES + CHUNK_EXIT_FRAMES;
-  const totalTransitionFrames = chunkTransitionFrames * chunks.length;
-
-  // Remaining frames split equally as display time per chunk
-  const displayPerChunk = Math.floor(
-    (displayFrames - totalTransitionFrames) / chunks.length
+  const chunkTransition  = CHUNK_ENTER + CHUNK_EXIT;
+  const displayPerChunk  = Math.max(
+    Math.floor((displayFrames - chunkTransition * arChunks.length) / arChunks.length),
+    10
   );
-  const chunkTotalFrames = CHUNK_ENTER_FRAMES + Math.max(displayPerChunk, 10) + CHUNK_EXIT_FRAMES;
+  const chunkTotalFrames = CHUNK_ENTER + displayPerChunk + CHUNK_EXIT;
 
-  // Outer scene fade (enter / exit of the whole ayah)
-  const outerEnterProgress = interpolate(frame, [0, enterFrames], [0, 1], {
+  // Outer enter/exit animates the whole ayah block
+  const outerEnter = interpolate(frame, [0, enterFrames], [0, 1], {
     extrapolateRight: 'clamp',
   });
-  const outerExitProgress = interpolate(
+  const outerExit  = interpolate(
     frame,
     [enterFrames + displayFrames, totalFrames],
     [0, 1],
     { extrapolateLeft: 'clamp' }
   );
-  const outerStyle = getAnimationStyle(animationStyle.id, outerEnterProgress, outerExitProgress);
+  const outerStyle = getAnimationStyle(animationStyle.id, outerEnter, outerExit);
 
   return (
-    <AbsoluteFill style={{ ...outerStyle, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-      {chunks.map((chunkText, i) => {
-        // Each chunk starts after the previous chunk inside the displayFrames window
-        const chunkStart = enterFrames + i * chunkTotalFrames;
+    <AbsoluteFill
+      style={{ ...outerStyle, display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+    >
+      {arChunks.map((arChunk, i) => {
+        // Build a per-chunk ayah with synced translations
+        const chunkAyah: SelectedAyah = {
+          ...ayah,
+          text_ar: arChunk,
+          text_en: enChunks[i] ?? enChunks[enChunks.length - 1],
+          text_fr: frChunks[i] ?? frChunks[frChunks.length - 1],
+        };
 
         return (
           <Sequence
             key={`chunk-${i}`}
-            from={chunkStart}
+            from={enterFrames + i * chunkTotalFrames}
             durationInFrames={chunkTotalFrames}
             layout="none"
           >
             <ChunkScene
-              ayah={ayah}
-              chunkText={chunkText}
+              ayah={chunkAyah}
               animationStyle={animationStyle}
               language={language}
-              enterFrames={CHUNK_ENTER_FRAMES}
-              displayFrames={Math.max(displayPerChunk, 10)}
-              exitFrames={CHUNK_EXIT_FRAMES}
+              enterFrames={CHUNK_ENTER}
+              displayFrames={displayPerChunk}
+              exitFrames={CHUNK_EXIT}
             />
           </Sequence>
         );
@@ -109,10 +115,9 @@ export const AyahScene: React.FC<Props> = ({
   );
 };
 
-// ── Internal component — animates a single chunk ──────────────────────────────
+// ── Per-chunk sub-scene ───────────────────────────────────────────────────────
 interface ChunkProps {
   ayah: SelectedAyah;
-  chunkText: string;
   animationStyle: AnimationStyle;
   language: Language;
   enterFrames: number;
@@ -122,7 +127,6 @@ interface ChunkProps {
 
 const ChunkScene: React.FC<ChunkProps> = ({
   ayah,
-  chunkText,
   animationStyle,
   language,
   enterFrames,
@@ -144,12 +148,12 @@ const ChunkScene: React.FC<ChunkProps> = ({
 
   const style = getAnimationStyle(animationStyle.id, enterProgress, exitProgress);
 
-  // Pass a modified ayah with only the chunk text for display
-  const chunkAyah: SelectedAyah = { ...ayah, text_ar: chunkText };
-
   return (
-    <AbsoluteFill style={{ ...style, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-      <TextDisplay ayah={chunkAyah} language={language} />
+    <AbsoluteFill
+      style={{ ...style, display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+    >
+      {/* ayah already has chunked text_ar + synced text_en / text_fr */}
+      <TextDisplay ayah={ayah} language={language} />
     </AbsoluteFill>
   );
 };

@@ -1,5 +1,5 @@
 import { CSSProperties } from "react";
-import { FacebookIcon, InstagramIcon, TiktokIcon, XIcon, GooglePlayIcon } from "../assets/icons";
+import { FacebookIcon, InstagramIcon, TiktokIcon, GooglePlayIcon } from "../assets/icons";
 import type { Language, SelectedAyah } from "../types";
 import { getAyahTextWithoutBasmala } from "../utils/textUtils";
 
@@ -81,7 +81,6 @@ export const TextDisplay: React.FC<Props> = ({ ayah, language }) => {
   };
 
   const storeIconStyle: CSSProperties = { display: "flex", alignItems: "center", gap: "5px" };
-  const dividerStyle: CSSProperties = { width: "1px", height: "20px", background: "rgba(255,255,255,0.2)" };
 
   // ── SOCIAL ROW ──────────────────────────────────────────
   const socialRowStyle: CSSProperties = {
@@ -113,10 +112,8 @@ export const TextDisplay: React.FC<Props> = ({ ayah, language }) => {
           <GooglePlayIcon size={17} color="#FFFFFF" />
           Google Play
         </div>
-        <div style={dividerStyle} />
-        Yaqeen Muslim | يقين المسلم
-        <div style={dividerStyle} />
-        حمّل مجاناً
+        <span style={{ marginLeft: "8px" }}>•</span>
+        Yaqeen Muslim | يقين المسلم – حمّل الآن
       </div>
 
       {/* ── SOCIAL ICONS ── */}
@@ -124,7 +121,6 @@ export const TextDisplay: React.FC<Props> = ({ ayah, language }) => {
         <InstagramIcon size={16} color="#FFFFFF" />
         <TiktokIcon size={16} color="#FFFFFF" />
         <FacebookIcon size={16} color="#FFFFFF" />
-        {/* <XIcon size={16} color="#FFFFFF" /> */}
         <span style={{ fontSize: "11px", color: "rgba(255,255,255,0.35)" }}>·</span>
         <span style={handleStyle}>@YaqeenMuslimApp</span>
       </div>
