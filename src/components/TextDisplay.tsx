@@ -89,7 +89,7 @@ export const TextDisplay: React.FC<Props> = ({ ayah, language }) => {
     alignItems: "center",
     justifyContent: "center",
     gap: "8px",
-    opacity: 0.5,
+    opacity: 0.7,
     marginTop: "8px",
   };
 
@@ -114,7 +114,7 @@ export const TextDisplay: React.FC<Props> = ({ ayah, language }) => {
           Google Play
         </div>
         <div style={dividerStyle} />
-        Yaqeen Muslim - يقين المسلم
+        Yaqeen Muslim | يقين المسلم
         <div style={dividerStyle} />
         حمّل مجاناً
       </div>
