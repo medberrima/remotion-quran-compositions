@@ -41,6 +41,7 @@ export interface VideoSettings {
   logoSize: number;
   language: Language;
   includeAudio: boolean;
+  chunks?: Chunk[];
 }
 
 export interface TimelineSegment {
@@ -52,3 +53,14 @@ export interface TimelineSegment {
   totalFrames: number;
   audioStartFrame: number;
 }
+
+export interface Chunk {
+  id: string;
+  ayahNumber: number;
+  wordIndices: number[];
+  text_ar: string;
+  text_en: string;
+  text_fr: string;
+  duration: number;
+}
+

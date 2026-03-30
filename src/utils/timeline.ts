@@ -1,4 +1,4 @@
-import type { SelectedAyah } from '../types';
+import type { SelectedAyah, Chunk } from '../types';
 
 export interface TimelineSegment {
   ayah: SelectedAyah;
@@ -8,11 +8,13 @@ export interface TimelineSegment {
   exitFrames: number;
   totalFrames: number;
   audioStartFrame: number;
+  chunks?: Chunk[];
 }
 
 export function calculateTimeline(
   ayahs: SelectedAyah[],
-  fps: number
+  fps: number,
+  chunks?: Chunk[]
 ): TimelineSegment[] {
   let currentFrame = 0;
   
@@ -24,6 +26,9 @@ export function calculateTimeline(
     // EXACT audio duration in frames
     const displayFrames = Math.floor(ayah.duration * fps);
     
+    // Get chunks for this ayah
+    const ayahChunks = chunks?.filter(c => c.ayahNumber === ayah.ayahNumber) || [];
+    
     const segment: TimelineSegment = {
       ayah,
       startFrame: currentFrame,
@@ -32,6 +37,7 @@ export function calculateTimeline(
       exitFrames,
       totalFrames: displayFrames, // Audio duration only
       audioStartFrame: currentFrame,
+      chunks: ayahChunks,
     };
     
     // Next starts exactly when this audio ends
@@ -49,4 +55,22 @@ export function calculateTotalDuration(ayahs: SelectedAyah[], fps: number): numb
   // Sum all audio durations in seconds, then convert to frames
   const totalSeconds = ayahs.reduce((sum, ayah) => sum + ayah.duration, 0);
   return Math.floor(totalSeconds * fps);
+}
+
+/**
+ * Calculate frame timing for a specific chunk
+ * Useful for word-by-word highlighting
+ */
+export function getChunkFrameTiming(
+  chunk: Chunk,
+  ayahDuration: number,
+  fps: number
+): { startFrame: number; endFrame: number } {
+  const chunkStartTime = (chunk.duration * chunk.wordIndices[0]) / chunk.wordIndices.length;
+  const chunkEndTime = chunkStartTime + chunk.duration;
+  
+  return {
+    startFrame: Math.floor(chunkStartTime * fps),
+    endFrame: Math.floor(chunkEndTime * fps),
+  };
 }

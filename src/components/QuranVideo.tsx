@@ -16,12 +16,13 @@ export const QuranVideo: React.FC<VideoSettings> = ({
   logoSize,
   language,
   includeAudio,
+  chunks,
 }) => {
   const { fps } = useVideoConfig();
 
   const timeline = useMemo(() => {
-    return calculateTimeline(selectedAyahs, fps);
-  }, [selectedAyahs, fps]);
+    return calculateTimeline(selectedAyahs, fps, chunks);
+  }, [selectedAyahs, fps, chunks]);
 
   return (
     <AbsoluteFill style={{ backgroundColor: "#000" }}>
@@ -41,6 +42,7 @@ export const QuranVideo: React.FC<VideoSettings> = ({
             enterFrames={segment.enterFrames}
             displayFrames={segment.displayFrames}
             exitFrames={segment.exitFrames}
+            chunks={chunks?.filter(c => c.ayahNumber === segment.ayah.ayahNumber) || []}
           />
 
           {/* Audio */}

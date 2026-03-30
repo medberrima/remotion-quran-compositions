@@ -34,10 +34,11 @@ export const RemotionRoot: React.FC = () => {
           logoSize: 80,
           language: 'en' as const,
           includeAudio: true,
+          chunks: [], // Add chunks default
         }}
         calculateMetadata={({ props }) => {
           const fps = 30;
-          const timeline = calculateTimeline(props.selectedAyahs as SelectedAyah[], fps);
+          const timeline = calculateTimeline(props.selectedAyahs as SelectedAyah[], fps, props.chunks);
           
           const totalDuration = timeline.length > 0
             ? timeline[timeline.length - 1].startFrame + timeline[timeline.length - 1].totalFrames
