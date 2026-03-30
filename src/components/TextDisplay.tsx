@@ -1,5 +1,5 @@
 import { CSSProperties } from "react";
-import { FacebookIcon, InstagramIcon, TiktokIcon, XIcon, GooglePlayIcon } from "../assets/icons";
+import { FacebookIcon, InstagramIcon, TiktokIcon, GooglePlayIcon } from "../assets/icons";
 import type { Language, SelectedAyah } from "../types";
 import { getAyahTextWithoutBasmala } from "../utils/textUtils";
 
@@ -17,16 +17,6 @@ export const TextDisplay: React.FC<Props> = ({ ayah, language }) => {
       : language === "en"
         ? ayah.text_en
         : ayah.text_fr;
-
-  // Auto font-size for translation — shrinks for long last-chunk text
-  const translationFontSize = (() => {
-    if (isArabic) return "52px";
-    const len = translationText.length;
-    if (len > 250) return "22px";
-    if (len > 180) return "26px";
-    if (len > 120) return "30px";
-    return "34px";
-  })();
 
   const containerStyle: CSSProperties = {
     display: "flex",
@@ -52,7 +42,7 @@ export const TextDisplay: React.FC<Props> = ({ ayah, language }) => {
 
   const translationStyle: CSSProperties = {
     fontFamily: '"Cairo", "Inter", sans-serif',
-    fontSize: translationFontSize,
+    fontSize: isArabic ? "52px" : "34px",
     lineHeight: isArabic ? 1.9 : 1.6,
     color: isArabic ? "#FFFFFF" : "rgba(255,255,255,0.95)",
     textShadow: "0 2px 10px rgba(0,0,0,0.4)",
@@ -71,7 +61,7 @@ export const TextDisplay: React.FC<Props> = ({ ayah, language }) => {
     letterSpacing: "0.5px",
   };
 
-  // ── ONE LINE BAR ───────────────────────────────────────────────────────────
+  // ── MINIMALIST ONE-LINE BAR ──────────────────────────────
   const barStyle: CSSProperties = {
     display: "flex",
     alignItems: "center",
@@ -92,7 +82,7 @@ export const TextDisplay: React.FC<Props> = ({ ayah, language }) => {
 
   const storeIconStyle: CSSProperties = { display: "flex", alignItems: "center", gap: "5px" };
 
-  // ── SOCIAL ROW ─────────────────────────────────────────────────────────────
+  // ── SOCIAL ROW ──────────────────────────────────────────
   const socialRowStyle: CSSProperties = {
     display: "flex",
     alignItems: "center",
@@ -110,10 +100,8 @@ export const TextDisplay: React.FC<Props> = ({ ayah, language }) => {
       {/* Arabic Text */}
       <div style={arabicTextStyle}>{getAyahTextWithoutBasmala(ayah.text_ar)}</div>
 
-      {/* Translation — only renders if text is non-empty */}
-      {language !== "ar" && translationText && (
-        <div style={translationStyle}>{translationText}</div>
-      )}
+      {/* Translation */}
+      {language !== "ar" && <div style={translationStyle}>{translationText}</div>}
 
       {/* Surah & Ayah */}
       <div style={metaStyle}>{ayah.surahName} • Ayah {ayah.ayahNumber}</div>
@@ -131,8 +119,8 @@ export const TextDisplay: React.FC<Props> = ({ ayah, language }) => {
       {/* ── SOCIAL ICONS ── */}
       <div style={socialRowStyle}>
         <InstagramIcon size={16} color="#FFFFFF" />
-        <TiktokIcon    size={16} color="#FFFFFF" />
-        <FacebookIcon  size={16} color="#FFFFFF" />
+        <TiktokIcon size={16} color="#FFFFFF" />
+        <FacebookIcon size={16} color="#FFFFFF" />
         <span style={{ fontSize: "11px", color: "rgba(255,255,255,0.35)" }}>·</span>
         <span style={handleStyle}>@YaqeenMuslimApp</span>
       </div>
