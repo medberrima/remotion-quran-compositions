@@ -67,6 +67,7 @@ export interface TimelineSegment {
   exitFrames: number;
   totalFrames: number;
   audioStartFrame: number;
+  audioTotalFrames: number; // ← full ayah audio duration (covers all its chunks)
   playAudio: boolean;
-  isChunk: boolean; // ← true when text comes from a chunk (skip basmala strip)
+  isChunk: boolean;
 }

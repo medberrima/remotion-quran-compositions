@@ -35,6 +35,7 @@ export const QuranVideo: React.FC<VideoSettings> = ({
           from={segment.startFrame}
           durationInFrames={segment.totalFrames}
         >
+          {/* ── VISUAL — scoped to this chunk / ayah duration ── */}
           <AyahScene
             ayah={segment.ayah}
             animationStyle={animationStyle}
@@ -42,15 +43,29 @@ export const QuranVideo: React.FC<VideoSettings> = ({
             enterFrames={segment.enterFrames}
             displayFrames={segment.displayFrames}
             exitFrames={segment.exitFrames}
-            isChunk={segment.isChunk}  // ← passed down
+            isChunk={segment.isChunk}
           />
 
+          {/*
+           * ── AUDIO — full ayah, not cut by chunk boundaries ──
+           *
+           * We wrap Audio in its own Sequence that starts at the same frame
+           * but lasts audioTotalFrames (= sum of all chunks for this ayah).
+           * This means the audio plays uninterrupted across all chunk visuals.
+           * Only the first segment of each ayah (playAudio=true) fires it.
+           */}
           {includeAudio && segment.playAudio && segment.ayah.audioUrl && (
-            <Audio
-              src={segment.ayah.audioUrl}
-              startFrom={0}
-              volume={1}
-            />
+            <Sequence
+              from={0}
+              durationInFrames={segment.audioTotalFrames}
+              layout="none"
+            >
+              <Audio
+                src={segment.ayah.audioUrl}
+                startFrom={0}
+                volume={1}
+              />
+            </Sequence>
           )}
         </Sequence>
       ))}

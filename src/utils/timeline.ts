@@ -26,48 +26,49 @@ export function calculateTimeline(
 
       segments.push({
         ayah,
-        startFrame:      cursor,
+        startFrame:       cursor,
         enterFrames,
         displayFrames,
         exitFrames,
         totalFrames,
-        audioStartFrame: cursor,
-        playAudio:       true,
-        isChunk:         false, // full ayah → apply getAyahTextWithoutBasmala
+        audioStartFrame:  cursor,
+        audioTotalFrames: totalFrames, // audio = full segment
+        playAudio:        true,
+        isChunk:          false,
       });
 
       cursor += totalFrames;
+
     } else {
-      // ── Chunked ayah — one segment per chunk ────────────────────────────
-      const audioStartFrame = cursor; // audio fires once at first chunk
+      // ── Chunked ayah ─────────────────────────────────────────────────────
+      // 1. Pre-calculate total frames for all chunks combined → audio duration
+      const chunkFrames = ayahChunks.map((chunk) => {
+        const ef = Math.round(ENTER_SECONDS * fps);
+        const xf = Math.round(EXIT_SECONDS  * fps);
+        const df = Math.max(Math.round(fps * 0.5), Math.round(chunk.duration * fps) - ef - xf);
+        return ef + df + xf;
+      });
+      const audioTotalFrames = chunkFrames.reduce((s, f) => s + f, 0);
+      const audioStartFrame  = cursor; // audio starts at the first chunk
 
+      // 2. Create one segment per chunk
       ayahChunks.forEach((chunk, idx) => {
-        const enterFrames   = Math.round(ENTER_SECONDS * fps);
-        const exitFrames    = Math.round(EXIT_SECONDS  * fps);
-        const displayFrames = Math.max(
-          Math.round(fps * 0.5),
-          Math.round(chunk.duration * fps) - enterFrames - exitFrames,
-        );
-        const totalFrames = enterFrames + displayFrames + exitFrames;
-
-        // Override ayah text with chunk text
-        const chunkAyah: SelectedAyah = {
-          ...ayah,
-          text_ar: chunk.text_ar,
-          text_en: chunk.text_en,
-          text_fr: chunk.text_fr,
-        };
+        const totalFrames = chunkFrames[idx];
+        const enterFrames = Math.round(ENTER_SECONDS * fps);
+        const exitFrames  = Math.round(EXIT_SECONDS  * fps);
+        const displayFrames = totalFrames - enterFrames - exitFrames;
 
         segments.push({
-          ayah:            chunkAyah,
-          startFrame:      cursor,
+          ayah: { ...ayah, text_ar: chunk.text_ar, text_en: chunk.text_en, text_fr: chunk.text_fr },
+          startFrame:       cursor,
           enterFrames,
           displayFrames,
           exitFrames,
           totalFrames,
           audioStartFrame,
-          playAudio:       idx === 0, // only first chunk plays audio
-          isChunk:         true,      // chunk text → skip basmala strip
+          audioTotalFrames, // same for all chunks of this ayah
+          playAudio:        idx === 0, // only first chunk triggers audio
+          isChunk:          true,
         });
 
         cursor += totalFrames;
