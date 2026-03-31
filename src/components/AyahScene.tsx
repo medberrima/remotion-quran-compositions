@@ -10,6 +10,7 @@ interface Props {
   enterFrames: number;
   displayFrames: number;
   exitFrames: number;
+  isChunk: boolean; // ← new
 }
 
 export const AyahScene: React.FC<Props> = ({
@@ -19,31 +20,26 @@ export const AyahScene: React.FC<Props> = ({
   enterFrames,
   displayFrames,
   exitFrames,
+  isChunk,
 }) => {
   const frame = useCurrentFrame();
   const totalFrames = enterFrames + displayFrames + exitFrames;
-  
-  // Calculate animation progress
+
   const enterProgress = interpolate(
     frame,
     [0, enterFrames],
     [0, 1],
-    { extrapolateRight: 'clamp' }
+    { extrapolateRight: 'clamp' },
   );
-  
+
   const exitProgress = interpolate(
     frame,
     [enterFrames + displayFrames, totalFrames],
     [0, 1],
-    { extrapolateLeft: 'clamp' }
+    { extrapolateLeft: 'clamp' },
   );
-  
-  // Get animation style based on current phase
-  const style = getAnimationStyle(
-    animationStyle.id,
-    enterProgress,
-    exitProgress
-  );
+
+  const style = getAnimationStyle(animationStyle.id, enterProgress, exitProgress);
 
   return (
     <AbsoluteFill
@@ -57,6 +53,7 @@ export const AyahScene: React.FC<Props> = ({
       <TextDisplay
         ayah={ayah}
         language={language}
+        isChunk={isChunk}  // ← passed down
       />
     </AbsoluteFill>
   );

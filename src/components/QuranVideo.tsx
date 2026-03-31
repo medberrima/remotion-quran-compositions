@@ -8,6 +8,7 @@ import { calculateTimeline } from "../utils/timeline";
 
 export const QuranVideo: React.FC<VideoSettings> = ({
   selectedAyahs,
+  chunks,
   background,
   animationStyle,
   watermark,
@@ -19,9 +20,10 @@ export const QuranVideo: React.FC<VideoSettings> = ({
 }) => {
   const { fps } = useVideoConfig();
 
-  const timeline = useMemo(() => {
-    return calculateTimeline(selectedAyahs, fps);
-  }, [selectedAyahs, fps]);
+  const timeline = useMemo(
+    () => calculateTimeline(selectedAyahs, fps, chunks),
+    [selectedAyahs, fps, chunks],
+  );
 
   return (
     <AbsoluteFill style={{ backgroundColor: "#000" }}>
@@ -29,11 +31,10 @@ export const QuranVideo: React.FC<VideoSettings> = ({
 
       {timeline.map((segment, index) => (
         <Sequence
-          key={`ayah-${segment.ayah.surahNumber}-${segment.ayah.ayahNumber}-${index}`}
+          key={`seg-${segment.ayah.ayahNumber}-${index}`}
           from={segment.startFrame}
           durationInFrames={segment.totalFrames}
         >
-          {/* Visual Animation Scene */}
           <AyahScene
             ayah={segment.ayah}
             animationStyle={animationStyle}
@@ -41,10 +42,10 @@ export const QuranVideo: React.FC<VideoSettings> = ({
             enterFrames={segment.enterFrames}
             displayFrames={segment.displayFrames}
             exitFrames={segment.exitFrames}
+            isChunk={segment.isChunk}  // ← passed down
           />
 
-          {/* Audio */}
-          {includeAudio && segment.ayah.audioUrl && (
+          {includeAudio && segment.playAudio && segment.ayah.audioUrl && (
             <Audio
               src={segment.ayah.audioUrl}
               startFrom={0}

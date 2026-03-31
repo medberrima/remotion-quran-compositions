@@ -1,7 +1,7 @@
 import { Composition } from 'remotion';
 import { QuranVideo } from './components/QuranVideo';
-import { calculateTimeline } from './utils/timeline';
-import type { SelectedAyah } from './types';
+import { calculateTotalDuration } from './utils/timeline';
+import type { Chunk, SelectedAyah } from './types';
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -15,6 +15,7 @@ export const RemotionRoot: React.FC = () => {
         height={1920}
         defaultProps={{
           selectedAyahs: [],
+          chunks: [],            // ← added
           background: {
             id: 'gradient-blue',
             name: 'Blue Gradient',
@@ -25,7 +26,7 @@ export const RemotionRoot: React.FC = () => {
             id: 'fade',
             name: 'Fade In',
           },
-          watermark: '@yaqeenapp',
+          watermark: '@YaqeenMuslimApp',
           logo: null,
           logoPosition: {
             id: 'top-right' as const,
@@ -37,16 +38,12 @@ export const RemotionRoot: React.FC = () => {
         }}
         calculateMetadata={({ props }) => {
           const fps = 30;
-          const timeline = calculateTimeline(props.selectedAyahs as SelectedAyah[], fps);
-          
-          const totalDuration = timeline.length > 0
-            ? timeline[timeline.length - 1].startFrame + timeline[timeline.length - 1].totalFrames
-            : 300;
-          
-          return {
-            durationInFrames: totalDuration,
+          const totalDuration = calculateTotalDuration(
+            props.selectedAyahs as SelectedAyah[],
             fps,
-          };
+            props.chunks as Chunk[],
+          );
+          return { durationInFrames: totalDuration, fps };
         }}
       />
     </>

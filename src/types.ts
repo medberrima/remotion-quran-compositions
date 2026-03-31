@@ -8,7 +8,17 @@ export interface SelectedAyah {
   text_en: string;
   text_fr: string;
   audioUrl?: string;
-  duration: number; // in seconds
+  duration: number;
+}
+
+export interface Chunk {
+  id: string;
+  ayahNumber: number;
+  wordIndices: number[];
+  text_ar: string;
+  text_en: string;
+  text_fr: string;
+  duration: number;
 }
 
 export interface AnimationStyle {
@@ -24,7 +34,12 @@ export interface Background {
   url?: string;
 }
 
-export type LogoPositionId = "top-left" | "top-right" | "bottom-left" | "bottom-right" | "center";
+export type LogoPositionId =
+  | "top-left"
+  | "top-right"
+  | "bottom-left"
+  | "bottom-right"
+  | "center";
 
 export interface LogoPosition {
   id: LogoPositionId;
@@ -33,6 +48,7 @@ export interface LogoPosition {
 
 export interface VideoSettings {
   selectedAyahs: SelectedAyah[];
+  chunks: Chunk[];
   background: Background;
   animationStyle: AnimationStyle;
   watermark: string | null;
@@ -51,4 +67,6 @@ export interface TimelineSegment {
   exitFrames: number;
   totalFrames: number;
   audioStartFrame: number;
+  playAudio: boolean;
+  isChunk: boolean; // ← true when text comes from a chunk (skip basmala strip)
 }
