@@ -1,15 +1,14 @@
 import { CSSProperties } from "react";
 import { FacebookIcon, InstagramIcon, TiktokIcon, GooglePlayIcon } from "../assets/icons";
-import type { Language, SelectedAyah, Chunk } from "../types";
+import type { Language, SelectedAyah } from "../types";
 import { getAyahTextWithoutBasmala } from "../utils/textUtils";
 
 interface Props {
   ayah: SelectedAyah;
   language: Language;
-  chunks?: Chunk[];
 }
 
-export const TextDisplay: React.FC<Props> = ({ ayah, language, chunks = [] }) => {
+export const TextDisplay: React.FC<Props> = ({ ayah, language }) => {
   const isArabic = language === "ar";
 
   const translationText =
@@ -62,6 +61,7 @@ export const TextDisplay: React.FC<Props> = ({ ayah, language, chunks = [] }) =>
     letterSpacing: "0.5px",
   };
 
+  // ── MINIMALIST ONE-LINE BAR ──────────────────────────────
   const barStyle: CSSProperties = {
     display: "flex",
     alignItems: "center",
@@ -83,6 +83,7 @@ export const TextDisplay: React.FC<Props> = ({ ayah, language, chunks = [] }) =>
 
   const storeIconStyle: CSSProperties = { display: "flex", alignItems: "center", gap: "5px" };
 
+  // ── SOCIAL ROW ──────────────────────────────────────────
   const socialRowStyle: CSSProperties = {
     display: "flex",
     alignItems: "center",
@@ -94,53 +95,19 @@ export const TextDisplay: React.FC<Props> = ({ ayah, language, chunks = [] }) =>
 
   const handleStyle: CSSProperties = { fontFamily: '"Cairo", sans-serif', fontSize: "13px", fontWeight: 500, color: "#FFFFFF" };
 
-  // Helper to highlight chunk words
-  const renderTextWithChunks = (text: string, isArabic: boolean) => {
-    if (!chunks || chunks.length === 0) {
-      return text;
-    }
-
-    const words = text.split(/\s+/);
-    return words.map((word, idx) => {
-      const isHighlighted = chunks.some(chunk =>
-        chunk.wordIndices.includes(idx)
-      );
-
-      return (
-        <span
-          key={idx}
-          style={{
-            backgroundColor: isHighlighted ? "rgba(255, 215, 0, 0.3)" : "transparent",
-            padding: isHighlighted ? "2px 4px" : "0",
-            borderRadius: isHighlighted ? "4px" : "0",
-            transition: "all 0.2s ease",
-          }}
-        >
-          {word}{" "}
-        </span>
-      );
-    });
-  };
-
   return (
     <div style={containerStyle}>
 
       {/* Arabic Text */}
-      <div style={arabicTextStyle}>
-        {renderTextWithChunks(getAyahTextWithoutBasmala(ayah.text_ar), true)}
-      </div>
+      <div style={arabicTextStyle}>{getAyahTextWithoutBasmala(ayah.text_ar)}</div>
 
       {/* Translation */}
-      {language !== "ar" && (
-        <div style={translationStyle}>
-          {renderTextWithChunks(translationText, false)}
-        </div>
-      )}
+      {language !== "ar" && <div style={translationStyle}>{translationText}</div>}
 
       {/* Surah & Ayah */}
       <div style={metaStyle}>{ayah.surahName} • Ayah {ayah.ayahNumber}</div>
 
-      {/* Minimalist Download Bar */}
+      {/* ── MINIMALIST DOWNLOAD BAR ── */}
       <div style={barStyle}>
         <div style={storeIconStyle}>
           <GooglePlayIcon size={17} color="#FFFFFF" />
@@ -150,7 +117,7 @@ export const TextDisplay: React.FC<Props> = ({ ayah, language, chunks = [] }) =>
         Yaqeen Muslim | حمّل الآن مجانًا - يقين المسلم
       </div>
 
-      {/* Social Icons */}
+      {/* ── SOCIAL ICONS ── */}
       <div style={socialRowStyle}>
         <InstagramIcon size={16} color="#FFFFFF" />
         <TiktokIcon size={16} color="#FFFFFF" />

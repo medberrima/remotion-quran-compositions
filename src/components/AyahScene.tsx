@@ -1,5 +1,5 @@
 import { AbsoluteFill, interpolate, useCurrentFrame } from 'remotion';
-import type { SelectedAyah, AnimationStyle, Language, Chunk } from '../types';
+import type { SelectedAyah, AnimationStyle, Language } from '../types';
 import { TextDisplay } from './TextDisplay';
 import { getAnimationStyle } from '../utils/animations';
 
@@ -10,7 +10,6 @@ interface Props {
   enterFrames: number;
   displayFrames: number;
   exitFrames: number;
-  chunks?: Chunk[];
 }
 
 export const AyahScene: React.FC<Props> = ({
@@ -20,7 +19,6 @@ export const AyahScene: React.FC<Props> = ({
   enterFrames,
   displayFrames,
   exitFrames,
-  chunks = [],
 }) => {
   const frame = useCurrentFrame();
   const totalFrames = enterFrames + displayFrames + exitFrames;
@@ -59,7 +57,6 @@ export const AyahScene: React.FC<Props> = ({
       <TextDisplay
         ayah={ayah}
         language={language}
-        chunks={chunks}
       />
     </AbsoluteFill>
   );
