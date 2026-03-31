@@ -25,17 +25,36 @@ export const QuranVideo: React.FC<VideoSettings> = ({
     [selectedAyahs, fps, chunks],
   );
 
+  // ── Audio map: one entry per ayah ────────────────────────────────────────
+  // Find the startFrame of the first segment for each ayah, use original
+  // selectedAyahs for audioUrl + full duration — chunks never affect audio.
+  const ayahAudioSegments = useMemo(() => {
+    return selectedAyahs
+      .filter((ayah) => ayah.audioUrl)
+      .map((ayah) => {
+        // First timeline segment that belongs to this ayah
+        const firstSeg = timeline.find(
+          (s) => s.ayah.ayahNumber === ayah.ayahNumber,
+        );
+        return {
+          ayah,
+          startFrame:      firstSeg?.startFrame ?? 0,
+          durationInFrames: Math.max(1, Math.round(ayah.duration * fps)),
+        };
+      });
+  }, [selectedAyahs, timeline, fps]);
+
   return (
     <AbsoluteFill style={{ backgroundColor: "#000" }}>
       <Background background={background} />
 
+      {/* ── VISUALS — one Sequence per timeline segment (chunks or full) ── */}
       {timeline.map((segment, index) => (
         <Sequence
-          key={`seg-${segment.ayah.ayahNumber}-${index}`}
+          key={`vis-${segment.ayah.ayahNumber}-${index}`}
           from={segment.startFrame}
           durationInFrames={segment.totalFrames}
         >
-          {/* ── VISUAL — scoped to this chunk / ayah duration ── */}
           <AyahScene
             ayah={segment.ayah}
             animationStyle={animationStyle}
@@ -45,30 +64,24 @@ export const QuranVideo: React.FC<VideoSettings> = ({
             exitFrames={segment.exitFrames}
             isChunk={segment.isChunk}
           />
-
-          {/*
-           * ── AUDIO — full ayah, not cut by chunk boundaries ──
-           *
-           * We wrap Audio in its own Sequence that starts at the same frame
-           * but lasts audioTotalFrames (= sum of all chunks for this ayah).
-           * This means the audio plays uninterrupted across all chunk visuals.
-           * Only the first segment of each ayah (playAudio=true) fires it.
-           */}
-          {includeAudio && segment.playAudio && segment.ayah.audioUrl && (
-            <Sequence
-              from={0}
-              durationInFrames={segment.audioTotalFrames}
-              layout="none"
-            >
-              <Audio
-                src={segment.ayah.audioUrl}
-                startFrom={0}
-                volume={1}
-              />
-            </Sequence>
-          )}
         </Sequence>
       ))}
+
+      {/* ── AUDIO — one Sequence per full ayah, unaffected by chunks ─────── */}
+      {includeAudio &&
+        ayahAudioSegments.map(({ ayah, startFrame, durationInFrames }) => (
+          <Sequence
+            key={`audio-${ayah.ayahNumber}`}
+            from={startFrame}
+            durationInFrames={durationInFrames}
+          >
+            <Audio
+              src={ayah.audioUrl!}
+              startFrom={0}
+              volume={1}
+            />
+          </Sequence>
+        ))}
 
       <Watermark
         text={watermark}
