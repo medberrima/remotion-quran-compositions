@@ -77,7 +77,7 @@ export const TextDisplay: React.FC<Props> = ({
     alignItems: "center",
     justifyContent: "center",
     gap: "10px",
-    marginBottom: "12px",
+    marginBottom: "40x",
   };
 
   const surahIconStyle: CSSProperties = {
@@ -181,10 +181,10 @@ export const TextDisplay: React.FC<Props> = ({
       {/* ── SURAH HEADER (ICON + NAME INLINE) ── */}
       <div>
         <div style={surahHeaderRowStyle}>
-          <span style={surahIconStyle}>surah-icon</span>
           <span style={surahNameStyle}>
             {surahLigature(ayah.surahNumber)}
           </span>
+          <span style={surahIconStyle}>surah-icon</span>
         </div>
         <div style={separatorStyle} />
       </div>
