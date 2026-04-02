@@ -4,6 +4,7 @@ import {
   InstagramIcon,
   TiktokIcon,
   GooglePlayIcon,
+  XIcon
 } from "../assets/icons";
 import type { Language, SelectedAyah } from "../types";
 import { getAyahTextWithoutBasmala } from "../utils/textUtils";
@@ -11,7 +12,7 @@ import { getAyahTextWithoutBasmala } from "../utils/textUtils";
 interface Props {
   ayah: SelectedAyah;
   language: Language;
-  isChunk?: boolean; // ← when true, skip basmala stripping
+  isChunk?: boolean;
 }
 
 export const TextDisplay: React.FC<Props> = ({ ayah, language, isChunk = false }) => {
@@ -24,10 +25,7 @@ export const TextDisplay: React.FC<Props> = ({ ayah, language, isChunk = false }
         ? ayah.text_en
         : ayah.text_fr;
 
-  // Full ayah → strip basmala. Chunk → use text as-is (already a subset of words)
-  const arabicDisplayText = isChunk
-    ? ayah.text_ar
-    : getAyahTextWithoutBasmala(ayah.text_ar);
+  const arabicDisplayText = getAyahTextWithoutBasmala(ayah.text_ar);
 
   const containerStyle: CSSProperties = {
     display: "flex",
@@ -144,8 +142,10 @@ export const TextDisplay: React.FC<Props> = ({ ayah, language, isChunk = false }
       {/* Social row */}
       <div style={socialRowStyle}>
         <InstagramIcon size={16} color="#FFFFFF" />
-        <TiktokIcon    size={16} color="#FFFFFF" />
-        <FacebookIcon  size={16} color="#FFFFFF" />
+        <FacebookIcon size={16} color="#FFFFFF" />
+        <XIcon size={16} color="#FFFFFF" />
+        <TiktokIcon size={16} color="#FFFFFF" />
+
         <span style={{ fontSize: "11px", color: "rgba(255,255,255,0.35)" }}>·</span>
         <span style={handleStyle}>@YaqeenMuslimApp</span>
       </div>
