@@ -2,7 +2,6 @@ import { AbsoluteFill, interpolate, useCurrentFrame } from 'remotion';
 import type { SelectedAyah, AnimationStyle, Language } from '../types';
 import { TextDisplay } from './TextDisplay';
 import { getAnimationStyle } from '../utils/animations';
-import { CSSProperties } from 'react';
 
 interface Props {
   ayah: SelectedAyah;
@@ -11,7 +10,7 @@ interface Props {
   enterFrames: number;
   displayFrames: number;
   exitFrames: number;
-  isChunk: boolean;
+  isChunk: boolean; // ← new
 }
 
 export const AyahScene: React.FC<Props> = ({
@@ -26,71 +25,36 @@ export const AyahScene: React.FC<Props> = ({
   const frame = useCurrentFrame();
   const totalFrames = enterFrames + displayFrames + exitFrames;
 
-  const enterProgress = interpolate(frame, [0, enterFrames], [0, 1], { extrapolateRight: 'clamp' });
-  const exitProgress = interpolate(frame, [enterFrames + displayFrames, totalFrames], [0, 1], { extrapolateLeft: 'clamp' });
+  const enterProgress = interpolate(
+    frame,
+    [0, enterFrames],
+    [0, 1],
+    { extrapolateRight: 'clamp' },
+  );
+
+  const exitProgress = interpolate(
+    frame,
+    [enterFrames + displayFrames, totalFrames],
+    [0, 1],
+    { extrapolateLeft: 'clamp' },
+  );
 
   const style = getAnimationStyle(animationStyle.id, enterProgress, exitProgress);
 
-  // Surah banner fades with the scene
-  const surahOpacity = interpolate(
-    frame,
-    [0, enterFrames, enterFrames + displayFrames * 0.75, totalFrames],
-    [0, 1, 1, 0],
-    { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' },
-  );
-
-  // e.g. surahNumber=1 → "surah001"
-  const surahCode = `surah${String(ayah.surahNumber).padStart(3, '0')}`;
-
-  const surahFont: CSSProperties = {
-    fontFamily: '"surah-names"',
-    lineHeight: 1,
-    color: '#FFFFFF',
-    textShadow: '0 4px 20px rgba(0,0,0,0.5)',
-    direction: 'rtl',
-  };
-
   return (
-    <AbsoluteFill style={{ ...style, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-
-      <div style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
+    <AbsoluteFill
+      style={{
+        ...style,
         display: 'flex',
-        flexDirection: 'column',
+        justifyContent: 'center',
         alignItems: 'center',
-        paddingTop: '72px',
-        gap: '6px',
-        opacity: surahOpacity,
-        zIndex: 10,
-      }}>
-        {/* "سورة" icon */}
-        <span style={{ ...surahFont, fontSize: '52px' }}>
-          surah-icon
-        </span>
-
-        {/* Surah name ligature e.g. surah001 → Al-Fatiha */}
-        <span style={{ ...surahFont, fontSize: '88px' }}>
-          {surahCode}
-        </span>
-
-        {/* Decorative line */}
-        <div style={{
-          width: '100px',
-          height: '1px',
-          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent)',
-          marginTop: '4px',
-        }} />
-      </div>
-      
+      }}
+    >
       <TextDisplay
         ayah={ayah}
         language={language}
-        isChunk={isChunk}
+        isChunk={isChunk}  // ← passed down
       />
-
     </AbsoluteFill>
   );
 };
