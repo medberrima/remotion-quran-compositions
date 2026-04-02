@@ -9,9 +9,7 @@ import {
 import type { Language, SelectedAyah } from "../types";
 import { getAyahTextWithoutBasmala } from "../utils/textUtils";
 
-// ── Surah Name V4 font — loaded once via <style> injection ──────────────────
-// The font uses ligature codes: surah001 → surah114
-// e.g. surahNumber=1 → "surah001", surahNumber=114 → "surah114"
+// ── Surah Name V4 font ─────────────────────────────────────────────────────
 const SURAH_FONT_URL =
   "https://static-cdn.tarteel.ai/qul/fonts/surah-names/v4/surah-name-v4.ttf";
 
@@ -23,7 +21,6 @@ const FONT_FACE = `
   }
 `;
 
-// Inject @font-face once into the document head (safe to call multiple times)
 if (typeof document !== "undefined") {
   const STYLE_ID = "__surah-name-v4-style__";
   if (!document.getElementById(STYLE_ID)) {
@@ -34,7 +31,6 @@ if (typeof document !== "undefined") {
   }
 }
 
-/** Convert surah number (1–114) to the font ligature code e.g. 1 → "surah001" */
 const surahLigature = (surahNumber: number): string =>
   `surah${String(surahNumber).padStart(3, "0")}`;
 
@@ -60,42 +56,38 @@ export const TextDisplay: React.FC<Props> = ({
         ? ayah.text_en
         : ayah.text_fr;
 
-  const arabicDisplayText = isChunk
-    ? ayah.text_ar
-    : getAyahTextWithoutBasmala(ayah.text_ar);
+  const arabicDisplayText = getAyahTextWithoutBasmala(ayah.text_ar);
 
-  // ── Styles ─────────────────────────────────────────────────────────────────
+  // ── Styles ────────────────────────────────────────────────────────────────
 
   const containerStyle: CSSProperties = {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    padding: "60px 30px",
+    padding: "30px 30px",
     maxWidth: "95%",
     textAlign: "center",
-    gap: "0px",
   };
 
-  // ── Surah name at top — uses V4 ligature font ────────────────────────────
-  const surahNameWrapStyle: CSSProperties = {
+  // Header row (icon + surah name inline)
+  const surahHeaderRowStyle: CSSProperties = {
     display: "flex",
-    flexDirection: "column",
+    flexDirection: "row",
     alignItems: "center",
-    marginBottom: "24px",
-    gap: "0px",
+    justifyContent: "center",
+    gap: "10px",
+    marginBottom: "12px",
   };
 
-  /** The "سورة" icon glyph — ligature code "surah-icon" */
   const surahIconStyle: CSSProperties = {
     fontFamily: "'surah-name-v4-icon'",
-    fontSize: "28px",
-    color: "rgba(255,255,255,0.55)",
-    lineHeight: 1,
+    fontSize: "64px",
+    color: "rgba(255,255,255,0.92)",
+    lineHeight: 1.1,
     userSelect: "none",
   };
 
-  /** The calligraphic surah name glyph */
   const surahNameStyle: CSSProperties = {
     fontFamily: "'surah-name-v4-icon'",
     fontSize: "64px",
@@ -105,7 +97,6 @@ export const TextDisplay: React.FC<Props> = ({
     userSelect: "none",
   };
 
-  /** Subtle separator line between surah name and verse */
   const separatorStyle: CSSProperties = {
     width: "60px",
     height: "1px",
@@ -114,14 +105,12 @@ export const TextDisplay: React.FC<Props> = ({
     borderRadius: "1px",
   };
 
-  // ── Verse text ────────────────────────────────────────────────────────────
   const arabicTextStyle: CSSProperties = {
     fontFamily: '"Amiri", "Traditional Arabic", serif',
     fontSize: "52px",
     lineHeight: 1.9,
     color: "#FFFFFF",
     textShadow: "0 4px 20px rgba(0,0,0,0.6)",
-    marginBottom: "0px",
     direction: "rtl",
     fontWeight: 400,
   };
@@ -137,7 +126,6 @@ export const TextDisplay: React.FC<Props> = ({
     marginBottom: isArabic ? "40px" : "0",
   };
 
-  // Ayah number badge
   const metaStyle: CSSProperties = {
     fontFamily: '"Cairo", sans-serif',
     fontSize: "20px",
@@ -145,10 +133,8 @@ export const TextDisplay: React.FC<Props> = ({
     marginTop: "36px",
     textShadow: "0 2px 12px rgba(0,0,0,0.5)",
     fontWeight: 500,
-    letterSpacing: "0.5px",
   };
 
-  // ── Download bar ──────────────────────────────────────────────────────────
   const barStyle: CSSProperties = {
     display: "flex",
     alignItems: "center",
@@ -158,8 +144,6 @@ export const TextDisplay: React.FC<Props> = ({
     margin: "28px 0 10px",
     background: "rgba(0, 0, 0, 0.23)",
     borderRadius: "50px",
-    flexWrap: "nowrap",
-    whiteSpace: "nowrap",
     fontFamily: '"Cairo", sans-serif',
     fontSize: "18px",
     fontWeight: 700,
@@ -173,7 +157,6 @@ export const TextDisplay: React.FC<Props> = ({
     gap: "5px",
   };
 
-  // ── Social row ────────────────────────────────────────────────────────────
   const socialRowStyle: CSSProperties = {
     display: "flex",
     alignItems: "center",
@@ -191,33 +174,31 @@ export const TextDisplay: React.FC<Props> = ({
   };
 
   // ── Render ────────────────────────────────────────────────────────────────
+
   return (
     <div style={containerStyle}>
 
-      {/* ── SURAH NAME — top, calligraphic ── */}
-      <div style={surahNameWrapStyle}>
-        {/* "سورة" icon */}
-        <span style={surahIconStyle}>surah-icon</span>
-        {/* Calligraphic surah name */}
-        <span style={surahNameStyle}>
-          {surahLigature(ayah.surahNumber)}
-        </span>
-        {/* Thin separator */}
+      {/* ── SURAH HEADER (ICON + NAME INLINE) ── */}
+      <div>
+        <div style={surahHeaderRowStyle}>
+          <span style={surahIconStyle}>surah-icon</span>
+          <span style={surahNameStyle}>
+            {surahLigature(ayah.surahNumber)}
+          </span>
+        </div>
         <div style={separatorStyle} />
       </div>
 
       {/* ── ARABIC VERSE ── */}
       <div style={arabicTextStyle}>{arabicDisplayText}</div>
 
-      {/* ── TRANSLATION (non-Arabic only) ── */}
+      {/* ── TRANSLATION ── */}
       {language !== "ar" && (
         <div style={translationStyle}>{translationText}</div>
       )}
 
       {/* ── AYAH NUMBER ── */}
-      <div style={metaStyle}>
-        ﴿ {ayah.ayahNumber} ﴾
-      </div>
+      <div style={metaStyle}>﴿ {ayah.ayahNumber} ﴾</div>
 
       {/* ── DOWNLOAD BAR ── */}
       <div style={barStyle}>
@@ -234,10 +215,12 @@ export const TextDisplay: React.FC<Props> = ({
       {/* ── SOCIAL ROW ── */}
       <div style={socialRowStyle}>
         <InstagramIcon size={16} color="#FFFFFF" />
-        <FacebookIcon  size={16} color="#FFFFFF" />
-        <XIcon         size={16} color="#FFFFFF" />
-        <TiktokIcon    size={16} color="#FFFFFF" />
-        <span style={{ fontSize: "11px", color: "rgba(255,255,255,0.35)" }}>·</span>
+        <FacebookIcon size={16} color="#FFFFFF" />
+        <XIcon size={16} color="#FFFFFF" />
+        <TiktokIcon size={16} color="#FFFFFF" />
+        <span style={{ fontSize: "11px", color: "rgba(255,255,255,0.35)" }}>
+          ·
+        </span>
         <span style={handleStyle}>@YaqeenMuslimApp</span>
       </div>
 
