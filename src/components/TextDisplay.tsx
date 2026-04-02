@@ -77,7 +77,7 @@ export const TextDisplay: React.FC<Props> = ({
     alignItems: "center",
     justifyContent: "center",
     gap: "10px",
-    marginBottom: "40px",
+    marginBottom: "120px",
   };
 
   const surahIconStyle: CSSProperties = {
