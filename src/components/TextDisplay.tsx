@@ -82,7 +82,7 @@ export const TextDisplay: React.FC<Props> = ({
 
   const surahIconStyle: CSSProperties = {
     fontFamily: "'surah-name-v4-icon'",
-    fontSize: "64px",
+    fontSize: "72px",
     color: "rgba(255,255,255,0.92)",
     lineHeight: 1.1,
     userSelect: "none",
@@ -90,7 +90,7 @@ export const TextDisplay: React.FC<Props> = ({
 
   const surahNameStyle: CSSProperties = {
     fontFamily: "'surah-name-v4-icon'",
-    fontSize: "64px",
+    fontSize: "72px",
     color: "rgba(255,255,255,0.92)",
     lineHeight: 1.1,
     textShadow: "0 2px 16px rgba(0,0,0,0.45)",
@@ -128,11 +128,12 @@ export const TextDisplay: React.FC<Props> = ({
 
   const metaStyle: CSSProperties = {
     fontFamily: '"Cairo", sans-serif',
-    fontSize: "20px",
-    color: "rgba(255,255,255,0.75)",
-    marginTop: "36px",
+    fontSize: "22px",
+    color: "rgba(255,255,255,0.85)",
+    marginTop: "40px",
     textShadow: "0 2px 12px rgba(0,0,0,0.5)",
     fontWeight: 500,
+    letterSpacing: "0.5px",
   };
 
   const barStyle: CSSProperties = {
@@ -198,7 +199,9 @@ export const TextDisplay: React.FC<Props> = ({
       )}
 
       {/* ── AYAH NUMBER ── */}
-      <div style={metaStyle}>﴿ {ayah.ayahNumber} ﴾</div>
+      <div style={metaStyle}>
+        {ayah.surahName} • Ayah {ayah.ayahNumber}
+      </div>
 
       {/* ── DOWNLOAD BAR ── */}
       <div style={barStyle}>
