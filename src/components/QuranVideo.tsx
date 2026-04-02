@@ -25,20 +25,17 @@ export const QuranVideo: React.FC<VideoSettings> = ({
     [selectedAyahs, fps, chunks],
   );
 
-  // ── Audio map: one entry per ayah ────────────────────────────────────────
-  // Find the startFrame of the first segment for each ayah, use original
-  // selectedAyahs for audioUrl + full duration — chunks never affect audio.
+  // ── Audio map: one entry per ayah (never split by chunks) ────────────────
   const ayahAudioSegments = useMemo(() => {
     return selectedAyahs
       .filter((ayah) => ayah.audioUrl)
       .map((ayah) => {
-        // First timeline segment that belongs to this ayah
         const firstSeg = timeline.find(
           (s) => s.ayah.ayahNumber === ayah.ayahNumber,
         );
         return {
           ayah,
-          startFrame:      firstSeg?.startFrame ?? 0,
+          startFrame:       firstSeg?.startFrame ?? 0,
           durationInFrames: Math.max(1, Math.round(ayah.duration * fps)),
         };
       });
@@ -48,7 +45,7 @@ export const QuranVideo: React.FC<VideoSettings> = ({
     <AbsoluteFill style={{ backgroundColor: "#000" }}>
       <Background background={background} />
 
-      {/* ── VISUALS — one Sequence per timeline segment (chunks or full) ── */}
+      {/* ── VISUALS — one Sequence per timeline segment (chunk or full ayah) */}
       {timeline.map((segment, index) => (
         <Sequence
           key={`vis-${segment.ayah.ayahNumber}-${index}`}
@@ -63,11 +60,12 @@ export const QuranVideo: React.FC<VideoSettings> = ({
             displayFrames={segment.displayFrames}
             exitFrames={segment.exitFrames}
             isChunk={segment.isChunk}
+            isLastChunk={segment.isLastChunk} // ← added
           />
         </Sequence>
       ))}
 
-      {/* ── AUDIO — one Sequence per full ayah, unaffected by chunks ─────── */}
+      {/* ── AUDIO — one Sequence per full ayah, unaffected by chunks ── */}
       {includeAudio &&
         ayahAudioSegments.map(({ ayah, startFrame, durationInFrames }) => (
           <Sequence
@@ -75,11 +73,7 @@ export const QuranVideo: React.FC<VideoSettings> = ({
             from={startFrame}
             durationInFrames={durationInFrames}
           >
-            <Audio
-              src={ayah.audioUrl!}
-              startFrom={0}
-              volume={1}
-            />
+            <Audio src={ayah.audioUrl!} startFrom={0} volume={1} />
           </Sequence>
         ))}
 

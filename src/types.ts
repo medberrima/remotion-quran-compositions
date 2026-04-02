@@ -21,10 +21,7 @@ export interface Chunk {
   duration: number;
 }
 
-export interface AnimationStyle {
-  id: string;
-  name: string;
-}
+export interface AnimationStyle { id: string; name: string; }
 
 export interface Background {
   id: string;
@@ -34,17 +31,8 @@ export interface Background {
   url?: string;
 }
 
-export type LogoPositionId =
-  | "top-left"
-  | "top-right"
-  | "bottom-left"
-  | "bottom-right"
-  | "center";
-
-export interface LogoPosition {
-  id: LogoPositionId;
-  name: string;
-}
+export type LogoPositionId = "top-left" | "top-right" | "bottom-left" | "bottom-right" | "center";
+export interface LogoPosition { id: LogoPositionId; name: string; }
 
 export interface VideoSettings {
   selectedAyahs: SelectedAyah[];
@@ -68,5 +56,6 @@ export interface TimelineSegment {
   totalFrames: number;
   audioStartFrame: number;
   playAudio: boolean;
-  isChunk: boolean; // ← true when text comes from a chunk (skip basmala strip)
+  isChunk: boolean;
+  isLastChunk: boolean; // ← true on the last chunk of an ayah
 }

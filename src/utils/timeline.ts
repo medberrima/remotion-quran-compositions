@@ -33,13 +33,16 @@ export function calculateTimeline(
         totalFrames,
         audioStartFrame: cursor,
         playAudio:       true,
-        isChunk:         false, // full ayah → apply getAyahTextWithoutBasmala
+        isChunk:         false,
+        isLastChunk:     false, // not a chunk — TextDisplay uses !isChunk to show ornament
       });
 
       cursor += totalFrames;
+
     } else {
       // ── Chunked ayah — one segment per chunk ────────────────────────────
-      const audioStartFrame = cursor; // audio fires once at first chunk
+      const audioStartFrame = cursor;
+      const lastIdx         = ayahChunks.length - 1;
 
       ayahChunks.forEach((chunk, idx) => {
         const enterFrames   = Math.round(ENTER_SECONDS * fps);
@@ -50,7 +53,6 @@ export function calculateTimeline(
         );
         const totalFrames = enterFrames + displayFrames + exitFrames;
 
-        // Override ayah text with chunk text
         const chunkAyah: SelectedAyah = {
           ...ayah,
           text_ar: chunk.text_ar,
@@ -66,8 +68,9 @@ export function calculateTimeline(
           exitFrames,
           totalFrames,
           audioStartFrame,
-          playAudio:       idx === 0, // only first chunk plays audio
-          isChunk:         true,      // chunk text → skip basmala strip
+          playAudio:       idx === 0,
+          isChunk:         true,
+          isLastChunk:     idx === lastIdx, // ← ornament only on the last chunk
         });
 
         cursor += totalFrames;
