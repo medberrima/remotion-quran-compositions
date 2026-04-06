@@ -103,7 +103,7 @@ export const TextDisplay: React.FC<Props> = ({
 
   const surahIconStyle: CSSProperties = {
     fontFamily: "'surah-name-v4-icon'",
-    fontSize: "72px",
+    fontSize: "76px",
     color: "rgba(255,255,255,0.92)",
     lineHeight: 1.1,
     userSelect: "none",
@@ -111,7 +111,7 @@ export const TextDisplay: React.FC<Props> = ({
 
   const surahNameStyle: CSSProperties = {
     fontFamily: "'surah-name-v4-icon'",
-    fontSize: "72px",
+    fontSize: "76px",
     color: "rgba(255,255,255,0.92)",
     lineHeight: 1.1,
     textShadow: "0 2px 16px rgba(0,0,0,0.45)",
@@ -229,7 +229,7 @@ export const TextDisplay: React.FC<Props> = ({
           </span>
           <span style={surahIconStyle}>surah-icon</span>
         </div>
-        <div style={separatorStyle} />
+        {/* <div style={separatorStyle} /> */}
       </div>
 
       {/* ── ARABIC VERSE + AYAH ORNAMENT inline ── */}
