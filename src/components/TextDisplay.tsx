@@ -1,4 +1,5 @@
-import { CSSProperties } from "react";
+import { CSSProperties, useEffect, useRef } from "react";
+import { continueRender, delayRender } from "remotion";
 import {
   FacebookIcon,
   InstagramIcon,
@@ -12,7 +13,11 @@ import { getAyahTextWithoutBasmala } from "../utils/textUtils";
 // ── Surah Name V4 font ────────────────────────────────────────────────────
 const SURAH_FONT_URL =
   "https://static-cdn.tarteel.ai/qul/fonts/surah-names/v4/surah-name-v4.ttf";
+const SURAH_FONT_FAMILY = "surah-name-v4-icon";
 
+// Inject the @font-face rule once at module level.
+// This makes the rule available to Chromium — but does NOT guarantee
+// the font is decoded. That is handled below with delayRender.
 if (typeof document !== "undefined") {
   const STYLE_ID = "__surah-name-v4-style__";
   if (!document.getElementById(STYLE_ID)) {
@@ -20,32 +25,26 @@ if (typeof document !== "undefined") {
     style.id = STYLE_ID;
     style.textContent = `
       @font-face {
-        font-family: 'surah-name-v4-icon';
+        font-family: '${SURAH_FONT_FAMILY}';
         src: url('${SURAH_FONT_URL}') format('truetype');
-        font-display: swap;
+        font-display: block;
       }
     `;
     document.head.appendChild(style);
   }
 }
 
-const surahLigature = (n: number) =>
-  `surah${String(n).padStart(3, "0")}`;
+// ── Helpers ───────────────────────────────────────────────────────────────
 
-/**
- * Convert Western digits to Arabic-Indic numerals
- * 1 → ١   12 → ١٢   114 → ١١٤
- */
+const surahLigature = (n: number) => `surah${String(n).padStart(3, "0")}`;
+
+/** Western digits → Arabic-Indic numerals:  1 → ١   12 → ١٢ */
 const toArabicIndic = (n: number): string =>
   String(n).replace(/\d/g, (d) => "٠١٢٣٤٥٦٧٨٩"[parseInt(d)]);
 
 /**
  * U+06DD  ARABIC END OF AYAH  ۝
- * When this character precedes Arabic-Indic digits inside the Amiri (or any
- * Quran-capable) font, it renders as the decorative ayah-number medallion
- * that appears at the end of each verse in a printed Mushaf.
- *
- * Example:  ۝١   ۝١٢   ۝١١٤
+ * Rendered by Amiri as the decorative medallion at the end of a verse.
  */
 const ayahOrnament = (ayahNumber: number): string =>
   `\u06DD${toArabicIndic(ayahNumber)}`;
@@ -56,7 +55,7 @@ interface Props {
   ayah: SelectedAyah;
   language: Language;
   isChunk?: boolean;
-  isLastChunk?: boolean; // ← show ayah number ornament at end of last chunk
+  isLastChunk?: boolean;
 }
 
 export const TextDisplay: React.FC<Props> = ({
@@ -65,6 +64,41 @@ export const TextDisplay: React.FC<Props> = ({
   isChunk = false,
   isLastChunk = false,
 }) => {
+  // ── Tell Remotion to wait until both fonts are decoded ───────────────────
+  // delayRender() pauses the renderer for this frame until continueRender()
+  // is called. Without this the headless Chromium screenshots the frame
+  // before the font bytes are available and the surah name disappears.
+  const fontHandleRef = useRef<ReturnType<typeof delayRender> | null>(null);
+
+  useEffect(() => {
+    fontHandleRef.current = delayRender("Loading surah-name and Amiri fonts");
+
+    Promise.all([
+      // Surah ligature icon font
+      document.fonts.load(`76px '${SURAH_FONT_FAMILY}'`, surahLigature(ayah.surahNumber)),
+      // Arabic verse / ornament font
+      document.fonts.load(`52px 'Amiri'`),
+    ])
+      .catch(() => {
+        // Never block the render — if the font fails, continue anyway
+      })
+      .finally(() => {
+        if (fontHandleRef.current !== null) {
+          continueRender(fontHandleRef.current);
+          fontHandleRef.current = null;
+        }
+      });
+
+    return () => {
+      // Safety: release the handle if the component unmounts first
+      if (fontHandleRef.current !== null) {
+        continueRender(fontHandleRef.current);
+        fontHandleRef.current = null;
+      }
+    };
+  }, [ayah.surahNumber]);
+
+  // ── Data ─────────────────────────────────────────────────────────────────
   const isArabic = language === "ar";
 
   const translationText =
@@ -78,7 +112,7 @@ export const TextDisplay: React.FC<Props> = ({
     ? ayah.text_ar
     : getAyahTextWithoutBasmala(ayah.text_ar);
 
-  // Show ornament when: full ayah (not a chunk) OR this is the last chunk
+  // Show ornament for a full ayah OR the last chunk of a split ayah
   const showOrnament = !isChunk || isLastChunk;
 
   // ── Styles ────────────────────────────────────────────────────────────────
@@ -101,16 +135,8 @@ export const TextDisplay: React.FC<Props> = ({
     marginBottom: "140px",
   };
 
-  const surahIconStyle: CSSProperties = {
-    fontFamily: "'surah-name-v4-icon'",
-    fontSize: "76px",
-    color: "rgba(255,255,255,0.92)",
-    lineHeight: 1.1,
-    userSelect: "none",
-  };
-
   const surahNameStyle: CSSProperties = {
-    fontFamily: "'surah-name-v4-icon'",
+    fontFamily: `'${SURAH_FONT_FAMILY}'`,
     fontSize: "76px",
     color: "rgba(255,255,255,0.92)",
     lineHeight: 1.1,
@@ -118,15 +144,6 @@ export const TextDisplay: React.FC<Props> = ({
     userSelect: "none",
   };
 
-  const separatorStyle: CSSProperties = {
-    width: "60px",
-    height: "1px",
-    background: "rgba(255,255,255,0.25)",
-    margin: "16px auto 0",
-    borderRadius: "1px",
-  };
-
-  // Arabic verse block — inline with the ornament at the end
   const arabicBlockStyle: CSSProperties = {
     direction: "rtl",
     textAlign: "center",
@@ -142,19 +159,15 @@ export const TextDisplay: React.FC<Props> = ({
     fontWeight: 400,
   };
 
-  /**
-   * Ayah ornament style — same Amiri font so the medallion renders natively.
-   * Slightly smaller than the verse text so it sits elegantly at the end.
-   */
   const ornamentStyle: CSSProperties = {
     fontFamily: '"Amiri", "Traditional Arabic", serif',
-    fontSize: "46px",         // slightly smaller than verse
+    fontSize: "46px",
     lineHeight: "inherit",
     color: "rgba(255,255,255,0.85)",
     textShadow: "0 2px 12px rgba(0,0,0,0.5)",
     fontWeight: 400,
     display: "inline",
-    marginInlineStart: "6px", // small gap after verse text (RTL-aware)
+    marginInlineStart: "6px",
   };
 
   const translationStyle: CSSProperties = {
@@ -222,14 +235,10 @@ export const TextDisplay: React.FC<Props> = ({
     <div style={containerStyle}>
 
       {/* ── SURAH NAME HEADER ── */}
-      <div>
-        <div style={surahHeaderRowStyle}>
-          <span style={surahNameStyle}>
-            {surahLigature(ayah.surahNumber)}
-          </span>
-          <span style={surahIconStyle}>surah-icon</span>
-        </div>
-        {/* <div style={separatorStyle} /> */}
+      <div style={surahHeaderRowStyle}>
+        <span style={surahNameStyle}>
+          {surahLigature(ayah.surahNumber)}
+        </span>
       </div>
 
       {/* ── ARABIC VERSE + AYAH ORNAMENT inline ── */}
