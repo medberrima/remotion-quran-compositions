@@ -1,5 +1,5 @@
-import { CSSProperties, useEffect, useRef } from "react";
-import { continueRender, delayRender } from "remotion";
+import { CSSProperties } from "react";
+import { delayRender, continueRender } from "remotion";
 import {
   FacebookIcon,
   InstagramIcon,
@@ -13,38 +13,49 @@ import { getAyahTextWithoutBasmala } from "../utils/textUtils";
 // ── Surah Name V4 font ────────────────────────────────────────────────────
 const SURAH_FONT_URL =
   "https://static-cdn.tarteel.ai/qul/fonts/surah-names/v4/surah-name-v4.ttf";
-const SURAH_FONT_FAMILY = "surah-name-v4-icon";
 
-// Inject the @font-face rule once at module level.
-// This makes the rule available to Chromium — but does NOT guarantee
-// the font is decoded. That is handled below with delayRender.
-if (typeof document !== "undefined") {
-  const STYLE_ID = "__surah-name-v4-style__";
-  if (!document.getElementById(STYLE_ID)) {
-    const style = document.createElement("style");
-    style.id = STYLE_ID;
-    style.textContent = `
-      @font-face {
-        font-family: '${SURAH_FONT_FAMILY}';
-        src: url('${SURAH_FONT_URL}') format('truetype');
-        font-display: block;
-      }
-    `;
-    document.head.appendChild(style);
-  }
-}
+// ── Tell Remotion: "don't screenshot any frame until this font is ready" ──
+//
+// delayRender() is called at module level (outside any component).
+// Remotion holds ALL frame captures until every open handle is released
+// via continueRender(). This guarantees the font is decoded before
+// the first screenshot is taken — fixing the blank surah name in exports.
+//
+// Why the old approach failed:
+//   document.createElement('style') + @font-face only *registers* the font.
+//   It does NOT download or decode it. The FontFace API's .load() does both.
+//
+const _surahFontHandle = delayRender("Loading surah-name-v4 font");
 
-// ── Helpers ───────────────────────────────────────────────────────────────
+new FontFace(
+  "surah-name-v4-icon",
+  `url("${SURAH_FONT_URL}") format("truetype")`,
+)
+  .load()
+  .then((loaded) => {
+    document.fonts.add(loaded);
+    continueRender(_surahFontHandle);
+  })
+  .catch((err) => {
+    // Always release the handle — leaving it open makes Remotion hang forever
+    console.error("⚠️ surah-name-v4 font failed to load:", err);
+    continueRender(_surahFontHandle);
+  });
+
+// ─────────────────────────────────────────────────────────────────────────────
 
 const surahLigature = (n: number) => `surah${String(n).padStart(3, "0")}`;
 
-/** Western digits → Arabic-Indic numerals:  1 → ١   12 → ١٢ */
+/**
+ * Convert Western digits to Arabic-Indic numerals
+ * 1 → ١   12 → ١٢   114 → ١١٤
+ */
 const toArabicIndic = (n: number): string =>
   String(n).replace(/\d/g, (d) => "٠١٢٣٤٥٦٧٨٩"[parseInt(d)]);
 
 /**
  * U+06DD  ARABIC END OF AYAH  ۝
- * Rendered by Amiri as the decorative medallion at the end of a verse.
+ * Renders as the decorative ayah-number medallion in Amiri / Quran fonts.
  */
 const ayahOrnament = (ayahNumber: number): string =>
   `\u06DD${toArabicIndic(ayahNumber)}`;
@@ -64,41 +75,6 @@ export const TextDisplay: React.FC<Props> = ({
   isChunk = false,
   isLastChunk = false,
 }) => {
-  // ── Tell Remotion to wait until both fonts are decoded ───────────────────
-  // delayRender() pauses the renderer for this frame until continueRender()
-  // is called. Without this the headless Chromium screenshots the frame
-  // before the font bytes are available and the surah name disappears.
-  const fontHandleRef = useRef<ReturnType<typeof delayRender> | null>(null);
-
-  useEffect(() => {
-    fontHandleRef.current = delayRender("Loading surah-name and Amiri fonts");
-
-    Promise.all([
-      // Surah ligature icon font
-      document.fonts.load(`76px '${SURAH_FONT_FAMILY}'`, surahLigature(ayah.surahNumber)),
-      // Arabic verse / ornament font
-      document.fonts.load(`52px 'Amiri'`),
-    ])
-      .catch(() => {
-        // Never block the render — if the font fails, continue anyway
-      })
-      .finally(() => {
-        if (fontHandleRef.current !== null) {
-          continueRender(fontHandleRef.current);
-          fontHandleRef.current = null;
-        }
-      });
-
-    return () => {
-      // Safety: release the handle if the component unmounts first
-      if (fontHandleRef.current !== null) {
-        continueRender(fontHandleRef.current);
-        fontHandleRef.current = null;
-      }
-    };
-  }, [ayah.surahNumber]);
-
-  // ── Data ─────────────────────────────────────────────────────────────────
   const isArabic = language === "ar";
 
   const translationText =
@@ -112,7 +88,6 @@ export const TextDisplay: React.FC<Props> = ({
     ? ayah.text_ar
     : getAyahTextWithoutBasmala(ayah.text_ar);
 
-  // Show ornament for a full ayah OR the last chunk of a split ayah
   const showOrnament = !isChunk || isLastChunk;
 
   // ── Styles ────────────────────────────────────────────────────────────────
@@ -135,8 +110,16 @@ export const TextDisplay: React.FC<Props> = ({
     marginBottom: "140px",
   };
 
+  const surahIconStyle: CSSProperties = {
+    fontFamily: "'surah-name-v4-icon'",
+    fontSize: "76px",
+    color: "rgba(255,255,255,0.92)",
+    lineHeight: 1.1,
+    userSelect: "none",
+  };
+
   const surahNameStyle: CSSProperties = {
-    fontFamily: `'${SURAH_FONT_FAMILY}'`,
+    fontFamily: "'surah-name-v4-icon'",
     fontSize: "76px",
     color: "rgba(255,255,255,0.92)",
     lineHeight: 1.1,
@@ -235,10 +218,13 @@ export const TextDisplay: React.FC<Props> = ({
     <div style={containerStyle}>
 
       {/* ── SURAH NAME HEADER ── */}
-      <div style={surahHeaderRowStyle}>
-        <span style={surahNameStyle}>
-          {surahLigature(ayah.surahNumber)}
-        </span>
+      <div>
+        <div style={surahHeaderRowStyle}>
+          <span style={surahNameStyle}>
+            {surahLigature(ayah.surahNumber)}
+          </span>
+          <span style={surahIconStyle}>surah-icon</span>
+        </div>
       </div>
 
       {/* ── ARABIC VERSE + AYAH ORNAMENT inline ── */}
