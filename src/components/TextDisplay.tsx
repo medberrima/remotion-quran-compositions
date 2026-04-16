@@ -1,5 +1,4 @@
 import { CSSProperties } from "react";
-import { delayRender, continueRender } from "remotion";
 import {
   FacebookIcon,
   InstagramIcon,
@@ -10,53 +9,13 @@ import {
 import type { Language, SelectedAyah } from "../types";
 import { getAyahTextWithoutBasmala } from "../utils/textUtils";
 
-// ── Surah Name V4 font ────────────────────────────────────────────────────
-const SURAH_FONT_URL =
-  "https://static-cdn.tarteel.ai/qul/fonts/surah-names/v4/surah-name-v4.ttf";
 
-// ── Tell Remotion: "don't screenshot any frame until this font is ready" ──
-//
-// delayRender() is called at module level (outside any component).
-// Remotion holds ALL frame captures until every open handle is released
-// via continueRender(). This guarantees the font is decoded before
-// the first screenshot is taken — fixing the blank surah name in exports.
-//
-// Why the old approach failed:
-//   document.createElement('style') + @font-face only *registers* the font.
-//   It does NOT download or decode it. The FontFace API's .load() does both.
-//
-const _surahFontHandle = delayRender("Loading surah-name-v4 font");
+const surahLigature = (n: number) =>
+  `surah${String(n).padStart(3, "0")}`;
 
-new FontFace(
-  "surah-name-v4-icon",
-  `url("${SURAH_FONT_URL}") format("truetype")`,
-)
-  .load()
-  .then((loaded) => {
-    document.fonts.add(loaded);
-    continueRender(_surahFontHandle);
-  })
-  .catch((err) => {
-    // Always release the handle — leaving it open makes Remotion hang forever
-    console.error("⚠️ surah-name-v4 font failed to load:", err);
-    continueRender(_surahFontHandle);
-  });
-
-// ─────────────────────────────────────────────────────────────────────────────
-
-const surahLigature = (n: number) => `surah${String(n).padStart(3, "0")}`;
-
-/**
- * Convert Western digits to Arabic-Indic numerals
- * 1 → ١   12 → ١٢   114 → ١١٤
- */
 const toArabicIndic = (n: number): string =>
   String(n).replace(/\d/g, (d) => "٠١٢٣٤٥٦٧٨٩"[parseInt(d)]);
 
-/**
- * U+06DD  ARABIC END OF AYAH  ۝
- * Renders as the decorative ayah-number medallion in Amiri / Quran fonts.
- */
 const ayahOrnament = (ayahNumber: number): string =>
   `\u06DD${toArabicIndic(ayahNumber)}`;
 
@@ -66,7 +25,7 @@ interface Props {
   ayah: SelectedAyah;
   language: Language;
   isChunk?: boolean;
-  isLastChunk?: boolean;
+  isLastChunk?: boolean; // ← show ayah number ornament at end of last chunk
 }
 
 export const TextDisplay: React.FC<Props> = ({
@@ -88,6 +47,7 @@ export const TextDisplay: React.FC<Props> = ({
     ? ayah.text_ar
     : getAyahTextWithoutBasmala(ayah.text_ar);
 
+  // Show ornament when: full ayah (not a chunk) OR this is the last chunk
   const showOrnament = !isChunk || isLastChunk;
 
   // ── Styles ────────────────────────────────────────────────────────────────
@@ -127,6 +87,15 @@ export const TextDisplay: React.FC<Props> = ({
     userSelect: "none",
   };
 
+  const separatorStyle: CSSProperties = {
+    width: "60px",
+    height: "1px",
+    background: "rgba(255,255,255,0.25)",
+    margin: "16px auto 0",
+    borderRadius: "1px",
+  };
+
+  // Arabic verse block — inline with the ornament at the end
   const arabicBlockStyle: CSSProperties = {
     direction: "rtl",
     textAlign: "center",
@@ -144,13 +113,13 @@ export const TextDisplay: React.FC<Props> = ({
 
   const ornamentStyle: CSSProperties = {
     fontFamily: '"Amiri", "Traditional Arabic", serif',
-    fontSize: "46px",
+    fontSize: "46px",         // slightly smaller than verse
     lineHeight: "inherit",
     color: "rgba(255,255,255,0.85)",
     textShadow: "0 2px 12px rgba(0,0,0,0.5)",
     fontWeight: 400,
     display: "inline",
-    marginInlineStart: "6px",
+    marginInlineStart: "6px", // small gap after verse text (RTL-aware)
   };
 
   const translationStyle: CSSProperties = {
@@ -225,6 +194,7 @@ export const TextDisplay: React.FC<Props> = ({
           </span>
           <span style={surahIconStyle}>surah-icon</span>
         </div>
+        {/* <div style={separatorStyle} /> */}
       </div>
 
       {/* ── ARABIC VERSE + AYAH ORNAMENT inline ── */}
