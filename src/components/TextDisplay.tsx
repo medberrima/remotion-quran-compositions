@@ -9,13 +9,44 @@ import {
 import type { Language, SelectedAyah } from "../types";
 import { getAyahTextWithoutBasmala } from "../utils/textUtils";
 
+// ── Surah Name V4 font ────────────────────────────────────────────────────
+const SURAH_FONT_URL =
+  "https://static-cdn.tarteel.ai/qul/fonts/surah-names/v4/surah-name-v4.ttf";
+
+if (typeof document !== "undefined") {
+  const STYLE_ID = "__surah-name-v4-style__";
+  if (!document.getElementById(STYLE_ID)) {
+    const style = document.createElement("style");
+    style.id = STYLE_ID;
+    style.textContent = `
+      @font-face {
+        font-family: 'surah-name-v4-icon';
+        src: url('${SURAH_FONT_URL}') format('truetype');
+        font-display: swap;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+}
+
 const surahLigature = (n: number) =>
   `surah${String(n).padStart(3, "0")}`;
 
+/**
+ * Convert Western digits to Arabic-Indic numerals
+ * 1 → ١   12 → ١٢   114 → ١١٤
+ */
 const toArabicIndic = (n: number): string =>
   String(n).replace(/\d/g, (d) => "٠١٢٣٤٥٦٧٨٩"[parseInt(d)]);
 
-
+/**
+ * U+06DD  ARABIC END OF AYAH  ۝
+ * When this character precedes Arabic-Indic digits inside the Amiri (or any
+ * Quran-capable) font, it renders as the decorative ayah-number medallion
+ * that appears at the end of each verse in a printed Mushaf.
+ *
+ * Example:  ۝١   ۝١٢   ۝١١٤
+ */
 const ayahOrnament = (ayahNumber: number): string =>
   `\u06DD${toArabicIndic(ayahNumber)}`;
 
@@ -25,7 +56,7 @@ interface Props {
   ayah: SelectedAyah;
   language: Language;
   isChunk?: boolean;
-  isLastChunk?: boolean; 
+  isLastChunk?: boolean; // ← show ayah number ornament at end of last chunk
 }
 
 export const TextDisplay: React.FC<Props> = ({
@@ -47,6 +78,7 @@ export const TextDisplay: React.FC<Props> = ({
     ? ayah.text_ar
     : getAyahTextWithoutBasmala(ayah.text_ar);
 
+  // Show ornament when: full ayah (not a chunk) OR this is the last chunk
   const showOrnament = !isChunk || isLastChunk;
 
   // ── Styles ────────────────────────────────────────────────────────────────
@@ -94,6 +126,7 @@ export const TextDisplay: React.FC<Props> = ({
     borderRadius: "1px",
   };
 
+  // Arabic verse block — inline with the ornament at the end
   const arabicBlockStyle: CSSProperties = {
     direction: "rtl",
     textAlign: "center",
@@ -109,15 +142,19 @@ export const TextDisplay: React.FC<Props> = ({
     fontWeight: 400,
   };
 
+  /**
+   * Ayah ornament style — same Amiri font so the medallion renders natively.
+   * Slightly smaller than the verse text so it sits elegantly at the end.
+   */
   const ornamentStyle: CSSProperties = {
     fontFamily: '"Amiri", "Traditional Arabic", serif',
-    fontSize: "46px",      
+    fontSize: "46px",         // slightly smaller than verse
     lineHeight: "inherit",
     color: "rgba(255,255,255,0.85)",
     textShadow: "0 2px 12px rgba(0,0,0,0.5)",
     fontWeight: 400,
     display: "inline",
-    marginInlineStart: "6px",
+    marginInlineStart: "6px", // small gap after verse text (RTL-aware)
   };
 
   const translationStyle: CSSProperties = {
