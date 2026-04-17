@@ -85,8 +85,7 @@ export const TextDisplay: React.FC<Props> = ({
   };
 
   const surahIconStyle: CSSProperties = {
-    // fontFamily: "'surah-name-v4-icon'",
-    fontFamily: '"Amiri", "Traditional Arabic", serif',
+    fontFamily: "'surah-name-v4-icon'",
     fontSize: "76px",
     color: "rgba(255,255,255,0.92)",
     lineHeight: 1.1,
@@ -94,8 +93,7 @@ export const TextDisplay: React.FC<Props> = ({
   };
 
   const surahNameStyle: CSSProperties = {
-    // fontFamily: "'surah-name-v4-icon'",
-    fontFamily: '"Amiri", "Traditional Arabic", serif',
+    fontFamily: "'surah-name-v4-icon'",
     fontSize: "76px",
     color: "rgba(255,255,255,0.92)",
     lineHeight: 1.1,
@@ -205,14 +203,14 @@ export const TextDisplay: React.FC<Props> = ({
       </div>
 
       {/* ── ARABIC VERSE + AYAH ORNAMENT inline ── */}
-      {/* <div style={arabicBlockStyle}>
+      <div style={arabicBlockStyle}>
         <span style={arabicTextStyle}>{arabicDisplayText}</span>
         {showOrnament && (
           <span style={ornamentStyle}>
             {ayahOrnament(ayah.ayahNumber)}
           </span>
         )}
-      </div> */}
+      </div>
 
       {/* ── TRANSLATION ── */}
       {language !== "ar" && (
@@ -239,9 +237,9 @@ export const TextDisplay: React.FC<Props> = ({
       {/* ── SOCIAL ROW ── */}
       <div style={socialRowStyle}>
         <InstagramIcon size={16} color="#FFFFFF" />
-        <FacebookIcon size={16} color="#FFFFFF" />
-        <XIcon size={16} color="#FFFFFF" />
-        <TiktokIcon size={16} color="#FFFFFF" />
+        <FacebookIcon  size={16} color="#FFFFFF" />
+        <XIcon         size={16} color="#FFFFFF" />
+        <TiktokIcon    size={16} color="#FFFFFF" />
         <span style={{ fontSize: "11px", color: "rgba(255,255,255,0.35)" }}>·</span>
         <span style={handleStyle}>@YaqeenMuslimApp</span>
       </div>
