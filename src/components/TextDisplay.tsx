@@ -205,14 +205,14 @@ export const TextDisplay: React.FC<Props> = ({
       </div>
 
       {/* ── ARABIC VERSE + AYAH ORNAMENT inline ── */}
-      <div style={arabicBlockStyle}>
+      {/* <div style={arabicBlockStyle}>
         <span style={arabicTextStyle}>{arabicDisplayText}</span>
         {showOrnament && (
           <span style={ornamentStyle}>
             {ayahOrnament(ayah.ayahNumber)}
           </span>
         )}
-      </div>
+      </div> */}
 
       {/* ── TRANSLATION ── */}
       {language !== "ar" && (
