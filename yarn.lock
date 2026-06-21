@@ -2,19 +2,19 @@
 # yarn lockfile v1
 
 
-"@remotion/fonts@4.0.415":
-  version "4.0.415"
-  resolved "https://registry.yarnpkg.com/@remotion/fonts/-/fonts-4.0.415.tgz#920c9ddd3d22a16098fdad3c3a12b4309ee949c9"
-  integrity sha512-0Tzm9Na99GLD7WAHM71oiZ+p9Z0bMYncMY7I93QECyRQn+NHhe62xM3h5Iosl2Eu1mkhhN2lvl849Qln1l3rMw==
+"@remotion/fonts@4.0.477":
+  version "4.0.477"
+  resolved "https://registry.yarnpkg.com/@remotion/fonts/-/fonts-4.0.477.tgz#94fe081d31add602719b6307f7cce2f55a470989"
+  integrity sha512-X3mhxvc1IK8PzIPuAnl0aDbrTPVNI0mAATNhoiKfUdEByJg/V8vzCqtVXPe9GXfHDl9YIZ+SF5ZR0vJfWThMGw==
   dependencies:
-    remotion "4.0.415"
+    remotion "4.0.477"
 
-"@remotion/google-fonts@4.0.415":
-  version "4.0.415"
-  resolved "https://registry.yarnpkg.com/@remotion/google-fonts/-/google-fonts-4.0.415.tgz#8e8f2c82310b0902e10c0e13951986e1494f6336"
-  integrity sha512-HNR3pgnSXZ3WY33gA9jmUM5C7RVst1GrxZtPkMuWY8BbL1MvHFkMupdVjBUXn2iRbOg36lR50xoXfmxXNQDKog==
+"@remotion/google-fonts@4.0.477":
+  version "4.0.477"
+  resolved "https://registry.yarnpkg.com/@remotion/google-fonts/-/google-fonts-4.0.477.tgz#42c4140dd2030685e0c37db283e88e7e1ef1989a"
+  integrity sha512-f0fx3yJYBICiEj7yaa7ktA95kYj+WkqfPSAuZIlwByHXMcMh8MH/ujvfS5xeqKv7WWOXnb7aq6qu1xO6mt46Fg==
   dependencies:
-    remotion "4.0.414"
+    remotion "4.0.477"
 
 "@types/react@^19.2.5":
   version "19.2.14"
@@ -28,15 +28,10 @@ csstype@^3.2.2:
   resolved "https://registry.yarnpkg.com/csstype/-/csstype-3.2.3.tgz#ec48c0f3e993e50648c86da559e2610995cf989a"
   integrity sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ==
 
-remotion@4.0.414:
-  version "4.0.414"
-  resolved "https://registry.yarnpkg.com/remotion/-/remotion-4.0.414.tgz#0796735f6114d07dd087c8f11c3d4ae8d122bde4"
-  integrity sha512-iwdms8/IgD5O9V82Gzd1uzkfTDUFQd52SqwesUtwNMnoO66Hn37BVfWe+ZRpnJRUcr/p14/d5/p1vyBEM+5reg==
-
-remotion@4.0.415:
-  version "4.0.415"
-  resolved "https://registry.yarnpkg.com/remotion/-/remotion-4.0.415.tgz#6048795b26fc5eee4a497dc21785c642995af559"
-  integrity sha512-/s8uX+dM8AVggmwgw8k77hFMcaQrXvD9NxA3eMRKfmzUhJeAViMxLocVh/eOMKGBPf+xBBht+CB25DgzZnn58g==
+remotion@4.0.477:
+  version "4.0.477"
+  resolved "https://registry.yarnpkg.com/remotion/-/remotion-4.0.477.tgz#c6c6c1405de01991537faa24fcc67921fb74666b"
+  integrity sha512-mxQ8MHmx9YUpxyTSm8hLZW/LGvOzk9b19i02DT9MKKFv+H6ZXkd/1Cn+a908fZWCqM4RRCIy3poXB8KsHiPdow==
 
 typescript@~5.9.3:
   version "5.9.3"

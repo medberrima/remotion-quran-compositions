@@ -39,7 +39,7 @@
     "typescript": "~5.9.3"
   },
   "dependencies": {
-    "@remotion/fonts": "4.0.415",
-    "@remotion/google-fonts": "4.0.415"
+    "@remotion/fonts": "4.0.477",
+    "@remotion/google-fonts": "4.0.477"
   }
 }
