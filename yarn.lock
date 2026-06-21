@@ -2,12 +2,12 @@
 # yarn lockfile v1
 
 
-"@remotion/fonts@^4.0.481":
-  version "4.0.481"
-  resolved "https://registry.yarnpkg.com/@remotion/fonts/-/fonts-4.0.481.tgz#40a501b9944624047add869a2aec4a2ac47243f0"
-  integrity sha512-lS+igncEenbm9NawsFrdjfWR6DQ4p3sf3buJkQgniVZjPzTZVLYP7E8VzAvjE3zf0B5TjkRWcfHHN1oXYfgTHA==
+"@remotion/fonts@4.0.415":
+  version "4.0.415"
+  resolved "https://registry.yarnpkg.com/@remotion/fonts/-/fonts-4.0.415.tgz#920c9ddd3d22a16098fdad3c3a12b4309ee949c9"
+  integrity sha512-0Tzm9Na99GLD7WAHM71oiZ+p9Z0bMYncMY7I93QECyRQn+NHhe62xM3h5Iosl2Eu1mkhhN2lvl849Qln1l3rMw==
   dependencies:
-    remotion "4.0.481"
+    remotion "4.0.415"
 
 "@remotion/google-fonts@4.0.415":
   version "4.0.415"
@@ -33,10 +33,10 @@ remotion@4.0.414:
   resolved "https://registry.yarnpkg.com/remotion/-/remotion-4.0.414.tgz#0796735f6114d07dd087c8f11c3d4ae8d122bde4"
   integrity sha512-iwdms8/IgD5O9V82Gzd1uzkfTDUFQd52SqwesUtwNMnoO66Hn37BVfWe+ZRpnJRUcr/p14/d5/p1vyBEM+5reg==
 
-remotion@4.0.481:
-  version "4.0.481"
-  resolved "https://registry.yarnpkg.com/remotion/-/remotion-4.0.481.tgz#41720e857b2579c0377ab8e85bd16acfbfd3b411"
-  integrity sha512-OurH3eP6zoS9fwAOTpOy73kz1k7v6cshLoig7jYEI/mfn5fFdXU5/fiBOQom5N4QidnVyDF7ix/SATyv6AY2Cg==
+remotion@4.0.415:
+  version "4.0.415"
+  resolved "https://registry.yarnpkg.com/remotion/-/remotion-4.0.415.tgz#6048795b26fc5eee4a497dc21785c642995af559"
+  integrity sha512-/s8uX+dM8AVggmwgw8k77hFMcaQrXvD9NxA3eMRKfmzUhJeAViMxLocVh/eOMKGBPf+xBBht+CB25DgzZnn58g==
 
 typescript@~5.9.3:
   version "5.9.3"
