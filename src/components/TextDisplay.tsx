@@ -8,25 +8,7 @@ import {
 } from "../assets/icons";
 import type { Language, SelectedAyah } from "../types";
 import { getAyahTextWithoutBasmala } from "../utils/textUtils";
-
-const SURAH_FONT_URL =
-  "https://static-cdn.tarteel.ai/qul/fonts/surah-names/v4/surah-name-v4.ttf";
-
-if (typeof document !== "undefined") {
-  const STYLE_ID = "__surah-name-v4-style__";
-  if (!document.getElementById(STYLE_ID)) {
-    const style = document.createElement("style");
-    style.id = STYLE_ID;
-    style.textContent = `
-      @font-face {
-        font-family: 'surah-name-v4-icon';
-        src: url('${SURAH_FONT_URL}') format('truetype');
-        font-display: swap;
-      }
-    `;
-    document.head.appendChild(style);
-  }
-}
+import { amiriFamily, cairoFamily, surahFontFamily } from "../utils/loadFonts";
 
 const surahLigature = (n: number) =>
   `surah${String(n).padStart(3, "0")}`;
@@ -85,7 +67,7 @@ export const TextDisplay: React.FC<Props> = ({
   };
 
   const surahIconStyle: CSSProperties = {
-    fontFamily: "'surah-name-v4-icon'",
+    fontFamily: surahFontFamily,
     fontSize: "76px",
     color: "rgba(255,255,255,0.92)",
     lineHeight: 1.1,
@@ -93,7 +75,7 @@ export const TextDisplay: React.FC<Props> = ({
   };
 
   const surahNameStyle: CSSProperties = {
-    fontFamily: "'surah-name-v4-icon'",
+    fontFamily: surahFontFamily,
     fontSize: "76px",
     color: "rgba(255,255,255,0.92)",
     lineHeight: 1.1,
@@ -108,7 +90,7 @@ export const TextDisplay: React.FC<Props> = ({
   };
 
   const arabicTextStyle: CSSProperties = {
-    fontFamily: '"Amiri", "Traditional Arabic", serif',
+    fontFamily: amiriFamily,
     fontSize: "52px",
     lineHeight: "inherit",
     color: "#FFFFFF",
@@ -117,7 +99,7 @@ export const TextDisplay: React.FC<Props> = ({
   };
 
   const ornamentStyle: CSSProperties = {
-    fontFamily: '"Amiri", "Traditional Arabic", serif',
+    fontFamily: amiriFamily,
     fontSize: "46px",
     lineHeight: "inherit",
     color: "rgba(255,255,255,0.85)",
@@ -128,7 +110,7 @@ export const TextDisplay: React.FC<Props> = ({
   };
 
   const translationStyle: CSSProperties = {
-    fontFamily: '"Cairo", "Inter", sans-serif',
+    fontFamily: cairoFamily,
     fontSize: isArabic ? "52px" : "34px",
     lineHeight: isArabic ? 1.9 : 1.6,
     color: isArabic ? "#FFFFFF" : "rgba(255,255,255,0.95)",
@@ -140,7 +122,7 @@ export const TextDisplay: React.FC<Props> = ({
   };
 
   const metaStyle: CSSProperties = {
-    fontFamily: '"Cairo", sans-serif',
+    fontFamily: cairoFamily,
     fontSize: "22px",
     color: "rgba(255,255,255,0.85)",
     marginTop: "40px",
@@ -158,7 +140,7 @@ export const TextDisplay: React.FC<Props> = ({
     margin: "28px 0 10px",
     background: "rgba(0, 0, 0, 0.23)",
     borderRadius: "50px",
-    fontFamily: '"Cairo", sans-serif',
+    fontFamily: cairoFamily,
     fontSize: "18px",
     fontWeight: 700,
     color: "#FFFFFF",
@@ -181,7 +163,7 @@ export const TextDisplay: React.FC<Props> = ({
   };
 
   const handleStyle: CSSProperties = {
-    fontFamily: '"Cairo", sans-serif',
+    fontFamily: cairoFamily,
     fontSize: "13px",
     fontWeight: 500,
     color: "#FFFFFF",

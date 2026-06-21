@@ -2,6 +2,20 @@
 # yarn lockfile v1
 
 
+"@remotion/fonts@^4.0.481":
+  version "4.0.481"
+  resolved "https://registry.yarnpkg.com/@remotion/fonts/-/fonts-4.0.481.tgz#40a501b9944624047add869a2aec4a2ac47243f0"
+  integrity sha512-lS+igncEenbm9NawsFrdjfWR6DQ4p3sf3buJkQgniVZjPzTZVLYP7E8VzAvjE3zf0B5TjkRWcfHHN1oXYfgTHA==
+  dependencies:
+    remotion "4.0.481"
+
+"@remotion/google-fonts@4.0.415":
+  version "4.0.415"
+  resolved "https://registry.yarnpkg.com/@remotion/google-fonts/-/google-fonts-4.0.415.tgz#8e8f2c82310b0902e10c0e13951986e1494f6336"
+  integrity sha512-HNR3pgnSXZ3WY33gA9jmUM5C7RVst1GrxZtPkMuWY8BbL1MvHFkMupdVjBUXn2iRbOg36lR50xoXfmxXNQDKog==
+  dependencies:
+    remotion "4.0.414"
+
 "@types/react@^19.2.5":
   version "19.2.14"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-19.2.14.tgz#39604929b5e3957e3a6fa0001dafb17c7af70bad"
@@ -13,6 +27,16 @@ csstype@^3.2.2:
   version "3.2.3"
   resolved "https://registry.yarnpkg.com/csstype/-/csstype-3.2.3.tgz#ec48c0f3e993e50648c86da559e2610995cf989a"
   integrity sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ==
+
+remotion@4.0.414:
+  version "4.0.414"
+  resolved "https://registry.yarnpkg.com/remotion/-/remotion-4.0.414.tgz#0796735f6114d07dd087c8f11c3d4ae8d122bde4"
+  integrity sha512-iwdms8/IgD5O9V82Gzd1uzkfTDUFQd52SqwesUtwNMnoO66Hn37BVfWe+ZRpnJRUcr/p14/d5/p1vyBEM+5reg==
+
+remotion@4.0.481:
+  version "4.0.481"
+  resolved "https://registry.yarnpkg.com/remotion/-/remotion-4.0.481.tgz#41720e857b2579c0377ab8e85bd16acfbfd3b411"
+  integrity sha512-OurH3eP6zoS9fwAOTpOy73kz1k7v6cshLoig7jYEI/mfn5fFdXU5/fiBOQom5N4QidnVyDF7ix/SATyv6AY2Cg==
 
 typescript@~5.9.3:
   version "5.9.3"
